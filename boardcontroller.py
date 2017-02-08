@@ -9,7 +9,7 @@
 #										#
 
 # Author:       Pridopia, James Clarke						#
-
+# Author:	Technicum, Wouter Lemoine
 # Website:      www.pridopia.co.uk						#
 
 #										#
