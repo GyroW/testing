@@ -1,28 +1,28 @@
 #-------------------------------------------------------------------------------#
 
-# Name:         23s17-4port-s-v103.py						#
+#	Name:					23s17-4port-s-v103.py						#
 
-# Purpose:      4 Port, 2 Bank Controller, V1.03, Simple GUI			#
+#	Purpose:			4	Port,	2	Bank Controller, V1.03,	Simple GUI			#
 
-# GPIO-Library: RPi.GPIO 0.5.3a							#
-
-#										#
-
-# Author:       Pridopia, James Clarke						#
-# Author:	Technicum, Wouter Lemoine
-# Website:      www.pridopia.co.uk						#
+#	GPIO-Library:	RPi.GPIO 0.5.3a							#
 
 #										#
 
-# Created:      12/09/2013							#
+#	Author:				Pridopia,	James	Clarke						#
+#	Author:	Technicum, Wouter	Lemoine
+#	Website:			www.pridopia.co.uk						#
+
+#										#
+
+#	Created:			12/09/2013							#
 
 #-------------------------------------------------------------------------------#
 
 
 
-import time, sys, signal, os
+import time, sys,	signal,	os
 
-import RPi.GPIO as GPIO
+import RPi.GPIO	as GPIO
 
 
 
@@ -32,173 +32,181 @@ GPIO.setwarnings(False)
 
 
 
-SPI_SLAVE_ADDR  = 0x40
+SPI_SLAVE_ADDR	=	0x40
 
-SPI_IOCTRL      = 0x0A
-
-
-
-SPI_IODIRA      = 0x00
-
-SPI_IODIRB      = 0x10
+SPI_IOCTRL			=	0x0A
 
 
 
-SPI_GPIOA       = 0x12
+SPI_IODIRA			=	0x00
 
-SPI_GPIOB       = 0x13
-
-
-
-SPI_SLAVE_WRITE = 0x00
-
-SPI_SLAVE_READ  = 0x01
+SPI_IODIRB			=	0x10
 
 
 
-SCLK        = 11
+SPI_GPIOA				=	0x12
 
-MOSI        = 10
-
-MISO        = 9
-
-CS          = 8
+SPI_GPIOB				=	0x13
 
 
 
+SPI_SLAVE_WRITE	=	0x00
 
-def sendValue(value):
+SPI_SLAVE_READ	=	0x01
 
-    for i in range(8):
 
-        if (value & 0x80):
 
-            GPIO.output(MOSI, GPIO.HIGH)
-            print("MOSI High")
-        else:
+SCLK				=	11
+
+MOSI				=	10
+
+MISO				=	9
+
+CS					=	8
+
+
+
+
+def	sendValue(value):
+
+		for	i	in range(8):
+
+				if (value	&	0x80):
+
+						GPIO.output(MOSI,	GPIO.HIGH)
+#						 print("MOSI High")
+				else:
  
-            GPIO.output(MOSI, GPIO.LOW)
-            print("MOSI LOW")
-        GPIO.output(SCLK, GPIO.HIGH)
-        GPIO.output(SCLK, GPIO.LOW)
-  
-        value <<= 1
-      
+						GPIO.output(MOSI,	GPIO.LOW)
+#						 print("MOSI LOW")
+				GPIO.output(SCLK,	GPIO.HIGH)
+				GPIO.output(SCLK,	GPIO.LOW)
+	
+				value	<<=	1
+			
 
 
-def sendSPI(opcode, addr, data):
+def	sendSPI(opcode,	addr,	data):
 
-    GPIO.output(CS, GPIO.LOW)
+		GPIO.output(CS,	GPIO.LOW)
 
-    sendValue(opcode|SPI_SLAVE_WRITE)
+		sendValue(opcode|SPI_SLAVE_WRITE)
 
-    sendValue(addr)
+		sendValue(addr)
 
-    sendValue(data)
+		sendValue(data)
 
-    GPIO.output(CS, GPIO.HIGH)
-
-
-
-def readSPI(opcode, addr):
-
-    GPIO.output(CS, GPIO.LOW)
-    sendValue(opcode|SPI_SLAVE_READ)
-    sendValue(addr)
+		GPIO.output(CS,	GPIO.HIGH)
 
 
 
-    value = 0
+def	readSPI(opcode,	addr):
 
-    for i in range(8):
-        value <<= 1
-        if(GPIO.input(MISO)):
-
-            value |= 0x01
-
-        GPIO.output(SCLK, GPIO.HIGH)
-        GPIO.output(SCLK, GPIO.LOW)
+		GPIO.output(CS,	GPIO.LOW)
+		sendValue(opcode|SPI_SLAVE_READ)
+		sendValue(addr)
 
 
 
-    GPIO.output(CS, GPIO.HIGH)
-    return value
+		value	=	0
 
-def main():
+		for	i	in range(8):
+				value	<<=	1
+				if(GPIO.input(MISO)):
 
+						value	|= 0x01
 
-
-    GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO correctly to interface with the expansion board
-
-    GPIO.setup(MOSI, GPIO.OUT)
-
-    GPIO.setup(MISO, GPIO.IN)
-
-    GPIO.setup(CS,   GPIO.OUT)
+				GPIO.output(SCLK,	GPIO.HIGH)
+				GPIO.output(SCLK,	GPIO.LOW)
 
 
 
-    sendSPI(0x40, 0x0A, 0x00) #This means: Bank A, Row 1, LED's 0b00000000
+		GPIO.output(CS,	GPIO.HIGH)
+		return value
 
-    sendSPI(0x40, 0x1A, 0x00) #This means: Bank A, Row 2, LED's 0b00000000
-
-    sendSPI(0x42, 0x0A, 0x00) #This means: Bank B, Row 1, LED's 0b00000000
-
-    sendSPI(0x42, 0x1A, 0x00) # and So forth
-
-    sendSPI(0x44, 0x0A, 0x00)
-
-    sendSPI(0x44, 0x1A, 0x00)
-
-    sendSPI(0x46, 0x0A, 0x00)
-
-    sendSPI(0x46, 0x1A, 0x00)
-
-
-    sendSPI(0x40, 0x05, 0x00) #What does this do? What is this 0x05?
-
-    sendSPI(0x42, 0x05, 0x00) # and this?
-
-    sendSPI(0x44, 0x05, 0x00) # and this?
-
-    sendSPI(0x46, 0x05, 0x00) # and this?
+def	main():
 
 
 
-    sendSPI(0x40, 0x00, 0x00) # and this? And 0x00?
+		GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO	correctly	to interface with	the	expansion	board
 
-    sendSPI(0x40, 0x01, 0x00) # and this? 0x01?
+		GPIO.setup(MOSI, GPIO.OUT)
 
+		GPIO.setup(MISO, GPIO.IN)
 
-
-    sendSPI(0x40, 0x12, 0x00) # and this? 0x12? 
-
-    sendSPI(0x40, 0x13, 0x00) # and also this? 0x13? #And why does it only do the previous 4 on bank A (0x40)
+		GPIO.setup(CS,	 GPIO.OUT)
 
 
-    GPIO.output(CS,   GPIO.HIGH)
 
-    GPIO.output(SCLK, GPIO.LOW)
+#		 sendSPI(0x40, 0x0A, 0x00) #This means:	Bank A,	Row	1, LED's 0b00000000
+#
+#		 sendSPI(0x40, 0x1A, 0x00) #This means:	Bank A,	Row	2, LED's 0b00000000
+#
+#		 sendSPI(0x42, 0x0A, 0x00) #This means:	Bank B,	Row	1, LED's 0b00000000
+#
+#		 sendSPI(0x42, 0x1A, 0x00) # and So	forth
+#
+#		 sendSPI(0x44, 0x0A, 0x00)
+#
+#		 sendSPI(0x44, 0x1A, 0x00)
+#
+#		 sendSPI(0x46, 0x0A, 0x00)
+#
+#		 sendSPI(0x46, 0x1A, 0x00)
+#
+#
+#		 sendSPI(0x40, 0x05, 0x00) #What does	this do? What	is this	0x05?
+#
+#		 sendSPI(0x42, 0x05, 0x00) # and this?
+#
+#		 sendSPI(0x44, 0x05, 0x00) # and this?
+#
+#		 sendSPI(0x46, 0x05, 0x00) # and this?
+#
+#
+#
+		sendSPI(0x40, 0x00, 0xFF) # and this? And 0x00?
+#
+		sendSPI(0x40, 0x01, 0x00) # and this? 0x01?
+#
+#
+#
+		#sendSPI(0x40, 0x12, 0xFF) # and this? 0x12? 
+#
+		#sendSPI(0x40, 0x13, 0xFF) # and also	this?	0x13?	#And why does	it only	do the previous	4	on bank	A	(0x40)
 
-    Menu("")
 
-def Menu(Error):
+		GPIO.output(CS,		GPIO.HIGH)
 
-	while True:
-		variable1 = readSPI(0x40, 0x0A)
-		print("dit is variable1", variable1)		
-       
-	#	print(readSPI(0x40, 0x0A))
-	#	print(readSPI(0x40, 0x1A))	
-	#	print(readSPI(0x42, 0x0A))
-	#	print(readSPI(0x42, 0x1A))	
-	#	print(readSPI(0x44, 0x0A))
-	#	print(readSPI(0x44, 0x1A))
-	#	print(readSPI(0x46, 0x0A))	
-	#	print(readSPI(0x46, 0x1A))
+		GPIO.output(SCLK,	GPIO.LOW)
 
-if __name__ == '__main__':
+		Menu("")
 
-    main()
+def	Menu(Error):
+	
+	#while True:
+	#	print(readSPI(0x40,	0x0A))
+	#	print(readSPI(0x40,	0x0A))
+	#	print(readSPI(0x40,	0x0A))
+	#	print(readSPI(0x40,	0x0A))
+	#	sendSPI(0x42,	0x12,	0x01)	#	0x12 en	0x13 Stuurt	alle 4 de	IC's
+	sendSPI(0x40,	0x0A,	0x00)	#	print(readSPI(0x40,	0x0A))
+	
+	Input	=	raw_input("Enter any key to	stop>")
+	#print(readSPI(0x40,	0x12))
+	#print(readSPI(0x40,	0x13))
+	print(readSPI(0x40,	0x09))	#0x09 leest uit
+	#print(readSPI(0x40,	0x19))
+	#	print(readSPI(0x40,	0x1A))	
+	#	print(readSPI(0x42,	0x0A))
+	#	print(readSPI(0x42,	0x1A))	
+	#	print(readSPI(0x44,	0x0A))
+	#	print(readSPI(0x44,	0x1A))
+	#	print(readSPI(0x46,	0x0A))	
+	#	print(readSPI(0x46,	0x1A))
+
+if __name__	== '__main__':
+
+		main()
 
 
