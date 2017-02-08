@@ -74,20 +74,16 @@ def sendValue(value):
         if (value & 0x80):
 
             GPIO.output(MOSI, GPIO.HIGH)
-           # print("value in die if loop", value)
-           # print("Mosi pin nu hoog")
+            print("MOSI High")
         else:
-
+ 
             GPIO.output(MOSI, GPIO.LOW)
-           # print("Mosi pun nu laag")
-
+            print("MOSI LOW")
         GPIO.output(SCLK, GPIO.HIGH)
-        #print("SCLK nu hoog")
         GPIO.output(SCLK, GPIO.LOW)
-        #print("SCLK nu laag")
-        #print(value, "voor die rare operator")
+  
         value <<= 1
-        #print(value, "achter die rare operator")
+      
 
 
 def sendSPI(opcode, addr, data):
@@ -107,43 +103,32 @@ def sendSPI(opcode, addr, data):
 def readSPI(opcode, addr):
 
     GPIO.output(CS, GPIO.LOW)
-    print("CS is nu laag")	
     sendValue(opcode|SPI_SLAVE_READ)
-    print(opcode,"sent")	
     sendValue(addr)
-    print(addr, "sent")
+
 
 
     value = 0
 
     for i in range(8):
-
         value <<= 1
-        print(value)
         if(GPIO.input(MISO)):
 
             value |= 0x01
 
         GPIO.output(SCLK, GPIO.HIGH)
-        print("SCLK nu hoog")
         GPIO.output(SCLK, GPIO.LOW)
-        print("SCLK nu laag")
+
 
 
     GPIO.output(CS, GPIO.HIGH)
-    print("CS is nu hoog")
     return value
-
-
-
-
-
 
 def main():
 
 
 
-    GPIO.setup(SCLK, GPIO.OUT)
+    GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO correctly to interface with the expansion board
 
     GPIO.setup(MOSI, GPIO.OUT)
 
@@ -153,13 +138,13 @@ def main():
 
 
 
-    sendSPI(0x40, 0x0A, 0x00)
+    sendSPI(0x40, 0x0A, 0x00) #This means: Bank A, Row 1, LED's 0b00000000
 
-    sendSPI(0x40, 0x1A, 0x00)
+    sendSPI(0x40, 0x1A, 0x00) #This means: Bank A, Row 2, LED's 0b00000000
 
-    sendSPI(0x42, 0x0A, 0x00)
+    sendSPI(0x42, 0x0A, 0x00) #This means: Bank B, Row 1, LED's 0b00000000
 
-    sendSPI(0x42, 0x1A, 0x00)
+    sendSPI(0x42, 0x1A, 0x00) # and So forth
 
     sendSPI(0x44, 0x0A, 0x00)
 
@@ -170,93 +155,47 @@ def main():
     sendSPI(0x46, 0x1A, 0x00)
 
 
-    sendSPI(0x40, 0x05, 0x00)
+    sendSPI(0x40, 0x05, 0x00) #What does this do? What is this 0x05?
 
-    sendSPI(0x42, 0x05, 0x00)
+    sendSPI(0x42, 0x05, 0x00) # and this?
 
-    sendSPI(0x44, 0x05, 0x00)
+    sendSPI(0x44, 0x05, 0x00) # and this?
 
-    sendSPI(0x46, 0x05, 0x00)
-
-
-
-    sendSPI(0x40, 0x00, 0x00)
-
-    sendSPI(0x40, 0x01, 0x00)
+    sendSPI(0x46, 0x05, 0x00) # and this?
 
 
 
-    sendSPI(0x40, 0x12, 0x00)
+    sendSPI(0x40, 0x00, 0x00) # and this? And 0x00?
 
-    sendSPI(0x40, 0x13, 0x00)
-
-
-
-#    sendSPI(0x40, 0x0A, 0xFF)
-
-#    sendSPI(0x40, 0x1A, 0xFF)
+    sendSPI(0x40, 0x01, 0x00) # and this? 0x01?
 
 
 
-#    sendSPI(0x40, 0x0A, 0x00)
+    sendSPI(0x40, 0x12, 0x00) # and this? 0x12? 
 
-#    sendSPI(0x40, 0x1A, 0x00)
-
+    sendSPI(0x40, 0x13, 0x00) # and also this? 0x13? #And why does it only do the previous 4 on bank A (0x40)
 
 
     GPIO.output(CS,   GPIO.HIGH)
 
     GPIO.output(SCLK, GPIO.LOW)
 
-
-
     Menu("")
-
-
 
 def Menu(Error):
 
 	while True:
 		variable1 = readSPI(0x40, 0x0A)
 		print("dit is variable1", variable1)		
-       			
-
-
-	#	sendSPI(0x40, 0x0A, 0xFF)
-	#	print(variable1)
+       
 	#	print(readSPI(0x40, 0x0A))
 	#	print(readSPI(0x40, 0x1A))	
-		
 	#	print(readSPI(0x42, 0x0A))
 	#	print(readSPI(0x42, 0x1A))	
-		
 	#	print(readSPI(0x44, 0x0A))
 	#	print(readSPI(0x44, 0x1A))
-		
 	#	print(readSPI(0x46, 0x0A))	
 	#	print(readSPI(0x46, 0x1A))
-
-	#	if readSPI(0x40, 0x0A) == 255:
-	#	
-	#		sendSPI(0x40, 0x0A, 0xFF)
-	#		sendSPI(0x40, 0x1A, 0xFF)
-	#		sendSPI(0x42, 0x0A, 0xFF)
-	#		sendSPI(0x42, 0x1A, 0xFF)
-	#		sendSPI(0x44, 0x0A, 0xFF)
-	#		sendSPI(0x44, 0x1A, 0xFF)
-	#		sendSPI(0x46, 0x0A, 0xFF)
-	#		sendSPI(0x46, 0x1A, 0xFF)
-
-	#	if readSPI(0x40, 0x0A) == 0:
-	#	
-	#		sendSPI(0x40, 0x0A, 0x00)
-	#		sendSPI(0x40, 0x1A, 0x00)
-	#		sendSPI(0x42, 0x0A, 0x00)
-	#		sendSPI(0x42, 0x1A, 0x00)
-	#		sendSPI(0x44, 0x0A, 0x00)
-	#		sendSPI(0x44, 0x1A, 0x00)
-	#		sendSPI(0x46, 0x0A, 0x00)
-	#		sendSPI(0x46, 0x1A, 0x00)
 
 if __name__ == '__main__':
 
