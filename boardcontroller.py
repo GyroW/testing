@@ -10,7 +10,7 @@
 
 #	Author:	Pridopia,	James	Clarke					#
 #	Author:	Technicum, 	Wouter 	Lemoine
-	Author: ON4ABS, 	Mark 	Berwaers
+#	Author: ON4ABS, 	Mark 	Berwaers
 #	Website: www.pridopia.co.uk						#
 
 #										#
@@ -155,13 +155,13 @@ def	main():
 #		 sendSPI(0x46, 0x1A, 0x00)
 #
 #
-		 sendSPI(0x40, 0x05, 0xA0) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
+		sendSPI(0x40, 0x05, 0xA0) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
 #
-		 sendSPI(0x42, 0x05, 0xA0) # See datasheet page 21
+		sendSPI(0x42, 0x05, 0xA0) # See datasheet page 21
 #
-		 sendSPI(0x44, 0x05, 0xA0) # Disabled automatic address pointer and sets bank to 1 so A is 0x0? and B is 0x1?
+		sendSPI(0x44, 0x05, 0xA0) # Disabled automatic address pointer and sets bank to 1 so A is 0x0? and B is 0x1?
 #
-		 sendSPI(0x46, 0x05, 0xA0) #
+		sendSPI(0x46, 0x05, 0xA0) #
 #
 #
 #
@@ -187,7 +187,7 @@ def	Menu(Error):
  
 		sendSPI(0x40,	0x0A,	0x00)	#print(readSPI(0x40, 0x0A))
 	
-		Input = raw_input("Enter any key to stop")
+		Input = raw_input("Enter to stop")
 
 		print(readSPI(0x40,	0x09))	#0x09 leest uit van 1ste rij
 		print(readSPI(0x40,	0x19))	#0x19 leest uit van 2de rij
