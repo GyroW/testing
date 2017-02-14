@@ -195,8 +195,8 @@ def	Menu(Error):
 	
 	#while True:
  
-		sendSPI(0x40,	0x1A,	0xFF)	
-		print(readSPI(0x40, 0x1A))
+		sendSPI(0x46,	0x1A,	0xFF)	
+		print(readSPI(0x46, 0x1A))
 	
 		Input = raw_input("Enter to stop")
 
