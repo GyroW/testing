@@ -128,8 +128,6 @@ def	readSPI(opcode,	addr):
 
 def	main():
 
-
-
 		GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO correctly	to interface with the expansion board
 
 		GPIO.setup(MOSI, GPIO.OUT)
@@ -157,13 +155,13 @@ def	main():
 #		 sendSPI(0x46, 0x1A, 0x00)
 #
 #
-#		 sendSPI(0x40, 0x05, 0x00) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
+		 sendSPI(0x40, 0x05, 0xA0) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
 #
-#		 sendSPI(0x42, 0x05, 0x00) # See datasheet page 21
+		 sendSPI(0x42, 0x05, 0xA0) # See datasheet page 21
 #
-#		 sendSPI(0x44, 0x05, 0x00) #
+		 sendSPI(0x44, 0x05, 0xA0) # Disabled automatic address pointer and sets bank to 1 so A is 0x0? and B is 0x1?
 #
-#		 sendSPI(0x46, 0x05, 0x00) #
+		 sendSPI(0x46, 0x05, 0xA0) #
 #
 #
 #
@@ -174,7 +172,7 @@ def	main():
 #
 #
 #		sendSPI(0x40, 0x12, 0xFF) # Not sure what this is since it's B  	INTERRUPT-ON-CHANGE PINS
-#		sendSPI(0x40, 0x13, 0xFF) # Same here, 				DEFAULT VALUE REGISTER 
+#		sendSPI(0x40, 0x13, 0xFF) # Same here, 					DEFAULT VALUE REGISTER 
 
 
 		GPIO.output(CS,	GPIO.HIGH)
@@ -186,27 +184,22 @@ def	main():
 def	Menu(Error):
 	
 	#while True:
-	#	print(readSPI(0x40,	0x0A))
-	#	print(readSPI(0x40,	0x0A))
-	#	print(readSPI(0x40,	0x0A))
-	#	print(readSPI(0x40,	0x0A))
-	#	sendSPI(0x42,	0x12,	0x01)	#0x12 en 0x13 Stuurt alle 4 de IC's
-		sendSPI(0x40,	0x0A,	0x00)		#print(readSPI(0x40, 0x0A))
+ 
+		sendSPI(0x40,	0x0A,	0x00)	#print(readSPI(0x40, 0x0A))
 	
-		Input	=	raw_input("Enter any key to stop")
-	#print(readSPI(0x40,	0x12))
-	#print(readSPI(0x40,	0x13))
-		print(readSPI(0x40,	0x09))	#0x09 leest uit
-	#print(readSPI(0x40,	0x19))
- 
+		Input = raw_input("Enter any key to stop")
 
- 
-
-
+		print(readSPI(0x40,	0x09))	#0x09 leest uit van 1ste rij
+		print(readSPI(0x40,	0x19))	#0x19 leest uit van 2de rij
+		 
+		
  
 
 
-if __name__	== '__main__':
+ 
+
+
+if __name__ == '__main__':
 
 		main()
 
