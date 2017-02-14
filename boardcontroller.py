@@ -1,20 +1,22 @@
 #-------------------------------------------------------------------------------#
 
-#	Name:					23s17-4port-s-v103.py						#
+#	Name: boardcontroller.py						#
 
-#	Purpose:			4	Port,	2	Bank Controller, V1.03,	Simple GUI			#
+#	Purpose: Controls RPI for mechanical pinball				#
 
-#	GPIO-Library:	RPi.GPIO 0.5.3a							#
-
-#										#
-
-#	Author:				Pridopia,	James	Clarke						#
-#	Author:	Technicum, Wouter	Lemoine
-#	Website:			www.pridopia.co.uk						#
+#	GPIO-Library:	RPi.GPIO 0.5.3a						#
 
 #										#
 
-#	Created:			12/09/2013							#
+#	Author:	Pridopia,	James	Clarke					#
+#	Author:	Technicum, 	Wouter 	Lemoine
+	Author: ON4ABS, 	Mark 	Berwaers
+#	Website: www.pridopia.co.uk						#
+
+#										#
+
+#	Created:	12/09/2013						#
+#	Modified:	x/02/2017						#
 
 #-------------------------------------------------------------------------------#
 
@@ -128,7 +130,7 @@ def	main():
 
 
 
-		GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO	correctly	to interface with	the	expansion	board
+		GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO correctly	to interface with the expansion board
 
 		GPIO.setup(MOSI, GPIO.OUT)
 
@@ -146,7 +148,7 @@ def	main():
 #
 #		 sendSPI(0x42, 0x1A, 0x00) # and So	forth
 #
-#		 sendSPI(0x44, 0x0A, 0x00)
+#		 sendSPI(0x44, 0x0A, 0x00) # Basically sets all the pins low
 #
 #		 sendSPI(0x44, 0x1A, 0x00)
 #
@@ -165,15 +167,14 @@ def	main():
 #
 #
 #
-		sendSPI(0x40, 0x00, 0xFF) # Toggles input/output state of pin, 0 = output, 1 = input
+		sendSPI(0x40, 0x00, 0xFF) # Toggles input/output state of pin, 0 = output, 1 = input 
+# For example sendSPI(0x40, 0x00, 0xFF) sets all pins of row 1 on the first bank of the first IC as input sendSPI(0x42, 0x10, 0x81) sets the first and last pin of the second bank of the second IC as input
+#		sendSPI(0x40, 0x01, 0x00) # Sets input polarity of pin, 0 = normal, 1 = inverse # Don't really need to touch this I suppose
 #
-		sendSPI(0x40, 0x01, 0x00) # Sets input polarity of pin, 0 = normal, 1 = inverse
 #
 #
-#
-		#sendSPI(0x40, 0x12, 0xFF) # Not sure what this is since it's B  	INTERRUPT-ON-CHANGE PINS
-#
-		#sendSPI(0x40, 0x13, 0xFF) # Same here, 				DEFAULT VALUE REGISTER 
+#		sendSPI(0x40, 0x12, 0xFF) # Not sure what this is since it's B  	INTERRUPT-ON-CHANGE PINS
+#		sendSPI(0x40, 0x13, 0xFF) # Same here, 				DEFAULT VALUE REGISTER 
 
 
 		GPIO.output(CS,	GPIO.HIGH)
@@ -197,13 +198,13 @@ def	Menu(Error):
 	#print(readSPI(0x40,	0x13))
 		print(readSPI(0x40,	0x09))	#0x09 leest uit
 	#print(readSPI(0x40,	0x19))
-	#	print(readSPI(0x40,	0x1A))	
-	#	print(readSPI(0x42,	0x0A))
-	#	print(readSPI(0x42,	0x1A))	
-	#	print(readSPI(0x44,	0x0A))
-	#	print(readSPI(0x44,	0x1A))
-	#	print(readSPI(0x46,	0x0A))	
-	#	print(readSPI(0x46,	0x1A))
+ 
+
+ 
+
+
+ 
+
 
 if __name__	== '__main__':
 
