@@ -176,7 +176,7 @@ def	main():
 #	For example 	sendSPI(0x40, 0x00, 0xFF) sets all pins of row 1 	of the first bank 	of the first 	IC as input
 #			sendSPI(0x42, 0x10, 0x81) sets the first and last pin 	of the second bank 	of the second 	IC as input
 		sendSPI(0x40, 0x01, 0x00) # Sets input polarity of pin, 0 = normal, 1 = inverse 
-#		Don't really need to touch this I suppose
+#		Don't really need to touch this I suppose???
 #
 #
 #
@@ -195,7 +195,8 @@ def	Menu(Error):
 	
 	#while True:
  
-		sendSPI(0x40,	0x1A,	0xFF)	#print(readSPI(0x40, 0x0A))
+		sendSPI(0x40,	0x1A,	0xFF)	
+		print(readSPI(0x40, 0x1A))
 	
 		Input = raw_input("Enter to stop")
 
