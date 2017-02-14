@@ -62,7 +62,7 @@ MOSI				=	10
 
 MISO				=	9
 
-CS					=	8
+CS				=	8
 
 
 
@@ -155,30 +155,30 @@ def	main():
 #		 sendSPI(0x46, 0x1A, 0x00)
 #
 #
-#		 sendSPI(0x40, 0x05, 0x00) #What does	this do? What	is this	0x05?
+#		 sendSPI(0x40, 0x05, 0x00) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
 #
-#		 sendSPI(0x42, 0x05, 0x00) # and this?
+#		 sendSPI(0x42, 0x05, 0x00) # See datasheet page 21
 #
-#		 sendSPI(0x44, 0x05, 0x00) # and this?
+#		 sendSPI(0x44, 0x05, 0x00) #
 #
-#		 sendSPI(0x46, 0x05, 0x00) # and this?
-#
-#
-#
-		sendSPI(0x40, 0x00, 0xFF) # and this? And 0x00?
-#
-		sendSPI(0x40, 0x01, 0x00) # and this? 0x01?
+#		 sendSPI(0x46, 0x05, 0x00) #
 #
 #
 #
-		#sendSPI(0x40, 0x12, 0xFF) # and this? 0x12? 
+		sendSPI(0x40, 0x00, 0xFF) # Toggles input/output state of pin, 0 = output, 1 = input
 #
-		#sendSPI(0x40, 0x13, 0xFF) # and also	this?	0x13?	#And why does	it only	do the previous	4	on bank	A	(0x40)
+		sendSPI(0x40, 0x01, 0x00) # Sets input polarity of pin, 0 = normal, 1 = inverse
+#
+#
+#
+		#sendSPI(0x40, 0x12, 0xFF) # Not sure what this is since it's B  	INTERRUPT-ON-CHANGE PINS
+#
+		#sendSPI(0x40, 0x13, 0xFF) # Same here, 				DEFAULT VALUE REGISTER 
 
 
-		GPIO.output(CS,		GPIO.HIGH)
+		GPIO.output(CS,	GPIO.HIGH)
 
-		GPIO.output(SCLK,	GPIO.LOW)
+		GPIO.output(SCLK, GPIO.LOW)
 
 		Menu("")
 
@@ -189,13 +189,13 @@ def	Menu(Error):
 	#	print(readSPI(0x40,	0x0A))
 	#	print(readSPI(0x40,	0x0A))
 	#	print(readSPI(0x40,	0x0A))
-	#	sendSPI(0x42,	0x12,	0x01)	#	0x12 en	0x13 Stuurt	alle 4 de	IC's
-	sendSPI(0x40,	0x0A,	0x00)	#	print(readSPI(0x40,	0x0A))
+	#	sendSPI(0x42,	0x12,	0x01)	#0x12 en 0x13 Stuurt alle 4 de IC's
+		sendSPI(0x40,	0x0A,	0x00)		#print(readSPI(0x40, 0x0A))
 	
-	Input	=	raw_input("Enter any key to	stop>")
+		Input	=	raw_input("Enter any key to stop")
 	#print(readSPI(0x40,	0x12))
 	#print(readSPI(0x40,	0x13))
-	print(readSPI(0x40,	0x09))	#0x09 leest uit
+		print(readSPI(0x40,	0x09))	#0x09 leest uit
 	#print(readSPI(0x40,	0x19))
 	#	print(readSPI(0x40,	0x1A))	
 	#	print(readSPI(0x42,	0x0A))
