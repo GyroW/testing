@@ -69,9 +69,6 @@ CS				=	8
 
 
 
-
-
-
 I_IODIRA   = 0x00 
 I_IODIRB   = 0x10 
 I_IPOLA    = 0x01 
@@ -83,7 +80,7 @@ I_DEFVALB  = 0x13
 I_INTCONA  = 0x04 
 I_INTCONB  = 0x14 
 I_IOCON    = 0x05 
-I_IOCON    = 0x15 
+I_IOCON_2  = 0x15 
 I_GPPUA    = 0x06 
 I_GPPUB    = 0x16 
 I_INTFA    = 0x07 
@@ -107,7 +104,7 @@ O_DEFVALB  = 0x07
 O_INTCONA  = 0x08 
 O_INTCONB  = 0x09 
 O_IOCON    = 0x0A 
-O_IOCON    = 0x0B 
+O_IOCON_2  = 0x0B 
 O_GPPUA    = 0x0C 
 O_GPPUB    = 0x0D 
 O_INTFA    = 0x0E 
@@ -118,16 +115,6 @@ O_GPIOA    = 0x12
 O_GPIOB    = 0x13 
 O_OLATA    = 0x14 
 O_OLATB    = 0x15  
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -187,6 +174,29 @@ def	readSPI(opcode,	addr):
 
 		GPIO.output(CS,	GPIO.HIGH)
 		return value
+		
+		
+def reset_regs():
+		for device_address in [0x40,0x42,0x44,0x46]:
+			# I_IOCON_2 = 0x15 !!
+			
+			# if in Bank 1 then back to bank 0 else write to O_OLATB(no effect)
+		    	sendSPI(device_address,I_IOCON_2,0x28) 
+      
+      
+       			# now always in bank 0 ( set SEQOP and HAEN ) 
+		    	sendSPI(device_address,O_IOCON,0x28) 
+      
+            	
+			sendSPI(device_address,O_IODIRA,0x00) # all pins input
+			sendSPI(device_address,O_IODIRB,0x00) # all pins input
+			
+			#clear all other registers except O_IOCON and O_IOCON_2
+			for regaddress in [O_IPOLA, O_IPOLB, O_GPINTENA, O_GPINTENB, O_DEFVALA, O_DEFVALB, O_INTCONA, O_INTCONB, O_GPPUA, O_GPPUB, O_INTFA, O_INTFB, O_INTCAPA, O_INTCAPB, O_GPIOA, O_GPIOB, O_OLATA, O_OLATB]:
+				sendSPI(device_address,regaddress,0)				
+		
+
+				
 
 def	main():
 
@@ -198,57 +208,11 @@ def	main():
 
 		GPIO.setup(CS,	 GPIO.OUT)
 
-
-
-#		 sendSPI(0x40, 0x0A, 0x00) #This means:	Bank A,	Row	1, LED's 0b00000000
-#
-#		 sendSPI(0x40, 0x1A, 0x00) #This means:	Bank A,	Row	2, LED's 0b00000000
-#
-#		 sendSPI(0x42, 0x0A, 0x00) #This means:	Bank B,	Row	1, LED's 0b00000000
-#
-#		 sendSPI(0x42, 0x1A, 0x00) # and So	forth
-#
-#		 sendSPI(0x44, 0x0A, 0x00) # Basically sets all the pins low
-#
-#		 sendSPI(0x44, 0x1A, 0x00)
-#
-#		 sendSPI(0x46, 0x0A, 0x00)
-#
-#		 sendSPI(0x46, 0x1A, 0x00)
-#
-#
-		sendSPI(0x40, O_IOCON, 0x8) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
-		sendSPI(0x42, O_IOCON, 0x8) # See datasheet page 21
-		sendSPI(0x44, O_IOCON, 0x8) # Use hardware address(0x8) 
-		sendSPI(0x46, O_IOCON, 0x8) # sets bank to 1 so A is 0x0? and B is 0x1?
-#
-#
-#
-#
-		sendSPI(0x40, O_IODIRA, 0xFF) # Toggles input/output state of pin, 0 = output, 1 = input			
-#		sendSPI(0x42, 0x00, 0x00)
-#		sendSPI(0x44, 0x00, 0x00)
-#		sendSPI(0x46, 0x00, 0x00)
-#		sendSPI(0x40, 0x10, 0x00)
-#       	sendSPI(0x42, 0x10, 0x00)
-#       	sendSPI(0x44, 0x10, 0x00)
-#	       	sendSPI(0x46, 0x10, 0x00)
-
-
-#	For example 	sendSPI(0x40, 0x00, 0xFF) sets all pins of row 1 	of the first bank 	of the first 	IC as input
-#			sendSPI(0x42, 0x10, 0x81) sets the first and last pin 	of the second bank 	of the second 	IC as input
-		#sendSPI(0x40, 0x01, 0x00) # Sets input polarity of pin, 0 = normal, 1 = inverse 
-#		Don't really need to touch this I suppose???
-#
-#
-#
-#		sendSPI(0x40, 0x12, 0xFF) # Not sure what this is since it's B  	INTERRUPT-ON-CHANGE PINS
-#		sendSPI(0x40, 0x13, 0xFF) # Same here, 					DEFAULT VALUE REGISTER 
-
-
 		GPIO.output(CS,	GPIO.HIGH)
 
 		GPIO.output(SCLK, GPIO.LOW)
+		reset_regs()
+
 		print(readSPI(0x40, O_IODIRA))
 		Menu("")
 		debug(0x40)
@@ -264,8 +228,8 @@ def	Menu(Error):
  		print(i)
 		sendSPI(0x40,	O_OLATB,	i)
 		#sendSPI(0x42,	O_OLATB,	i)
-		sendSPI(0x42,	O_OLATA,	i)
-		sendSPI(0x44,	O_OLATB,	i)
+		#sendSPI(0x42,	O_OLATA,	i)
+		#sendSPI(0x44,	O_OLATB,	i)
 		#sendSPI(0x46,	O_OLATB,	255-i)
 		time.sleep(0.01)	
 		#sendSPI(0x42,	O_OLATB,	0x81)	
@@ -300,7 +264,7 @@ def 	debug(code):
 		print(code,	"O_INTCONA ",		readSPI(code,	O_INTCONA ))
 		print(code,	"O_INTCONB ",		readSPI(code,	O_INTCONB ))
 		print(code,	"O_IOCON   ",		readSPI(code,	O_IOCON   ))
-		print(code,	"O_IOCON   ",		readSPI(code,	O_IOCON   ))
+		print(code,	"O_IOCON_2 ",		readSPI(code,	O_IOCON_2 ))
 		print(code,	"O_GPPUA   ",		readSPI(code,	O_GPPUA   ))
  		print(code,	"O_GPPUB   ",		readSPI(code,	O_GPPUB   ))
  		print(code,	"O_INTFA   ",		readSPI(code,	O_INTFA   ))
@@ -317,26 +281,7 @@ if __name__ == '__main__':
 
 		main()
 		
-		
-		#sendSPI(0x40, 0x0A, 0x00) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
-		#sendSPI(0x42, 0x0A, 0x00) # See datasheet page 21
-		#sendSPI(0x44, 0x0A, 0x00) # Disabled automatic address pointer 
-		#sendSPI(0x46, 0x0A, 0x00) # sets bank to 1 so A is 0x0? and B is 0x1?
-		#
-		sendSPI(0x40, O_OLATB, 0x00) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
-		sendSPI(0x42, O_OLATB, 0x00) # See datasheet page 21
-		sendSPI(0x44, O_OLATB, 0x00) # Disabled automatic address pointer 
-		sendSPI(0x46, O_OLATB, 0x00) # sets bank to 1 so A is 0x0? and B is 0x1?
-		
-		sendSPI(0x40, O_OLATA, 0x00) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
-		sendSPI(0x42, O_OLATA, 0x00) # See datasheet page 21
-		sendSPI(0x44, O_OLATA, 0x00) # Disabled automatic address pointer 
-		sendSPI(0x46, O_OLATA, 0x00) # sets bank to 1 so A is 0x0? and B is 0x1?
+		reset_regs()
 
-		#sendSPI(0x40, I_IOCON, 0x00) # IOCON: I/O EXPANDER CONFIGURATION REGISTER	
-		#sendSPI(0x42, I_IOCON, 0x00) # See datasheet page 21
-		#sendSPI(0x44, I_IOCON, 0x00) # Disabled automatic address pointer 
-		#sendSPI(0x46, I_IOCON, 0x00) # sets bank to 1 so A is 0x0? and B is 0x1?
-		
 
 
