@@ -203,6 +203,40 @@ yards = 0           #starting yardsunits
 yardsten = 0        #starting yardsten 
 points = 0          #testing punten
 targetshit = 0      #Aantal Targets Hit
+
+
+class Feeler:
+	def __init__(m,maxv,func):
+		m.maxval=maxv
+		m.teller=maxv
+		m.oldstate=0
+		m.func=func
+
+	def feel(m):
+		a=readSPI(0x46, O_GPIOA)
+		b=readSPI(0x46, O_GPIOB)&0xF0
+		if a or b:
+			if m.teller>0:
+				m.teller-=1
+				if m.teller==0:
+					if m.oldstate==0:
+						m.oldstate=1
+						m.func(a,b)
+						# doe iets
+		else:
+			if m.teller<m.maxval:
+				m.teller+=1
+				if m.teller==m.maxval:
+					if m.oldstate==1:
+						m.oldstate=0
+						#doe iets
+						
+		
+
+
+
+
+
 def	main():
 
 		GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO correctly	to interface with the expansion board
@@ -237,26 +271,26 @@ def	main():
 		sendSPI(0x46, O_GPPUB, 0xF0)
 
 		while 1:                
-                	Menu("")
+                	Scan.feel()
 #		debug(0x40)
 #		debug(0x42)
 #		debug(0x44)
 #		debug(0x46)
+
+
+
+
+
+				
+			
+	
+
+
+
 		
-def	Menu(Error):
-            readoutAone = toBinary(readSPI(0x46, O_GPIOA))
-            readoutBone = toBinary(readSPI(0x46, O_GPIOB))
-	    time.sleep(0.02)
-	    readoutAtwo = toBinary(readSPI(0x46, O_GPIOA))
-	    readoutBtwo = toBinary(readSPI(0x46, O_GPIOB))
-	    if readoutAone == readoutAtwo:
-		switchbankone = readoutAtwo
-	    else:
-		switchbankone = [0,0,0,0,0,0,0,0]
-	    if readoutBone == readoutBtwo:
-		switchbanktwo = readoutBtwo
-	    else:
-		switchbanktwo = [0,0,0,0,0,0,0,0]
+def	Menu(a,b):
+            switchbankone=toBinary(a)
+	    switchbanktwo=toBinary(b)
 
             global targetshit
             global yardsten
@@ -610,6 +644,8 @@ def toggle(opcode, addr, lamp):
 
 
 if __name__ == '__main__':
+	
+		Scan=Feeler(30,Menu)
 
 		main()
 		
