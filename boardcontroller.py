@@ -23,7 +23,7 @@
 
 
 import time, sys,	signal,	os
-
+import random
 import RPi.GPIO	as GPIO
 
 
@@ -188,8 +188,8 @@ def reset_regs():
 		    	sendSPI(device_address,O_IOCON,0x28) 
       
             	
-			sendSPI(device_address,O_IODIRA,0x00) # all pins input
-			sendSPI(device_address,O_IODIRB,0x00) # all pins input
+			sendSPI(device_address,O_IODIRA,0x00) # all pins output
+			sendSPI(device_address,O_IODIRB,0x00) # all pins output
 			
 			#clear all other registers except O_IOCON and O_IOCON_2
 			for regaddress in [O_IPOLA, O_IPOLB, O_GPINTENA, O_GPINTENB, O_DEFVALA, O_DEFVALB, O_INTCONA, O_INTCONB, O_GPPUA, O_GPPUB, O_INTFA, O_INTFB, O_INTCAPA, O_INTCAPB, O_GPIOA, O_GPIOB, O_OLATA, O_OLATB]:
@@ -222,9 +222,15 @@ def	main():
 
 #		print(readSPI(0x40, O_IODIRA))
 
-                sendSPI(0x46, O_IODIRA, 0xFF)
+                sendSPI(0x46, O_IODIRA, 0xFF) #Sets the switches as input instead of output
                 sendSPI(0x46, O_IODIRB, 0xF0)
-		Menu("")
+                #Start of game lights:
+                sendSPI(0x40, O_GPIOA, 0x80)
+                sendSPI(0x40, O_GPIOB, 0x20)
+                sendSPI(0x42, O_GPIOA, 0x03)
+                sendSPI(0x42, O_GPIOB, 0x2A)
+                
+                Menu("")
 #		debug(0x40)
 #		debug(0x42)
 #		debug(0x44)
@@ -241,35 +247,46 @@ def	Menu(Error):
             print(switchbank2)
            
             if switchbank1[0] == 1:#toprollover 1
-                if toBinary(readSPI(0x42, OGPIOB)[7]: 
+                if toBinary(readSPI(0x42, OGPIOB)[4]: 
                     yard(30)
                 punten(500) 
             if switchbank1[1] == 1:#toprollover 2
                 punten(500)
+                if toBinary(readSPI(0x42, OGPIOB)[5]: 
+                    yard(30)
             if switchbank1[2] == 1:#toprollover 3
                 punten(500)
+                if toBinary(readSPI(0x42, OGPIOB)[6]: 
+                    yard(30)
             if switchbank1[3] == 1:#toprollover 4
                 punten(500)
+                if toBinary(readSPI(0x42, OGPIOB)[7]: 
+                    yard(30)
             if switchbank1[4] == 1:#ster
-               punten(100)
-               changeyardsdirection()
+                punten(100)
+                changeyardsdirection()
 
             if switchbank1[5] == 1:#popbumper
-                
+                punten(50)
+                yard(1)
+                randomtoplights()
             if switchbank1[6] == 1:#targets
-                targetshit = targetshit + 1
+                punten(1000)
+                yard(5)
             if switchbank1[7] == 1:#spinner
-                punten(10)    
+                punten(10) 
+                changeyardsdirection()
             if switchbank2[0] == 1:#outlane
                 punten(1000)
                 yard(10)
             if switchbank2[1] == 1:#achterbank
                 punten(500)
-                yard(5)
-            if switchbank2[2] == 1:#bank
-                
+                yard(1)
+            if switchbank2[2] == 1:#bank drop down targers 
+                targetshit = targetshit + 1
+    
             if switchbank2[3] == 1:#outhole
-                
+                outhole()                                       #place holder function depends on bram 
             if targetshit == 7:
                 if toBinary(readSPI(0x42, O_GPIOB)[2] == 1:
                     goal()
@@ -293,20 +310,25 @@ def     changeyardsdirection():                                 #changes what di
             toggle(0x42, O_GPIOA, 2)
             toggle(0x42, O_GPIOA, 3)
 
-def     yard(amount):
+def     yard(amount):                                           #Controls the yardage and corresponding lights!
             global yardsdirection                               #    
             global yards                                        #
             global yardsten                                     #
             yardstate = toBinary(readSPI(0x40, O_GPIOB)         #2de rij in excel bestand
-            if yardsdirection == 0:                             #
+            if yardsdirection == 0:                             #Direction of arrow 0 is to the right, 1 is to the left
                     yards = yards + amount                      #
             elif yardsdirection == 1:                           #
                     yards = yards - amount                      #
-            while yards > 10:                                   #Als yards meer is dan 10 dan moeten we yardsten optellen 
-                    yardsten = yardsten + 1                     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    yards = yards - 10                          #als pijltje omgekeerd staat!!!
-            if yards < 1:
-                    yards = 1
+            while yards > 10:                                   #If we are multiple times over 10 hence the while loop
+                    yardsten = yardsten + 1                     #If we go above 10 we add to the yardsten (issue with splitting numbers)
+                    yards = yards - 10                          #Subtract 10 from yards to get to our number
+            while yards < 1 and yardsten > 0:                   #When the ball is moving backwards we need to go down unless we are already at 0
+                    yards = 10 + yards                          #Yards is negative hence "+" this will make yards a single digit number or 10
+                    yardsten = yardsten - 1                     #We're going backwards and when we're below 0 in the single yards we go down a ten
+            if yards < 1 and yardsten = 0:                      #If we're totally at the left we can't go more left so we just make yards 1 again
+                    yards = 1                                   #
+            if yardsten < 0:                                    #If yardsten somehow goes below 0 we make it 0 just to be sure...
+                yardsten = 0                                    #
             if yards == 1:
                     sendSPI(0x40, O_GPIOA, 0x80)                #1ste rij in excel bestand
                     yardstate[0] = 0
@@ -493,8 +515,12 @@ def     yard(amount):
 
 
 
-                    
-
+def     randomtoplights():
+            toplitestate = toBinary(readSPI(0x42, O_GPIOB))
+            toplitestate[4] = random.randint(0, 1)
+            toplitestate[5] = random.randint(0, 1)
+            toplitestate[6] = random.randint(0, 1)
+            toplitestate[7] = random.randint(0, 1)
 
 def     special():                                              #defines what special does
             
