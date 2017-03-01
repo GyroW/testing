@@ -198,6 +198,11 @@ def reset_regs():
 
 				
 
+yardsdirection = 0  #0 = right 1 = left
+yards = 0           #starting yardsunits
+yardsten = 0        #starting yardsten 
+points = 0          #testing punten
+targetshit = 0      #Aantal Targets Hit
 def	main():
 
 		GPIO.setup(SCLK, GPIO.OUT) #Sets the Raspberry's GPIO correctly	to interface with the expansion board
@@ -213,11 +218,6 @@ def	main():
 		GPIO.output(SCLK, GPIO.LOW)
 		reset_regs()
                 #declaring some variables
-                yardsdirection = 0  #0 = right 1 = left
-                yards = 0           #starting yardsunits
-                yardsten = 0        #starting yardsten 
-                points = 0          #testing punten
-                targetshit = 0      #Aantal Targets Hit
 
 
 #		print(readSPI(0x40, O_IODIRA))
@@ -229,68 +229,68 @@ def	main():
                 sendSPI(0x40, O_GPIOB, 0x20)
                 sendSPI(0x42, O_GPIOA, 0x03)
                 sendSPI(0x42, O_GPIOB, 0x2A)
-                
-                Menu("")
+		while 1:                
+                	Menu("")
 #		debug(0x40)
 #		debug(0x42)
 #		debug(0x44)
 #		debug(0x46)
 		
 def	Menu(Error):
-            switchbank1 = toBinary(readSPI(0x46, O_GPIOA)
-            switchbank2 = toBinary(readSPI(0x46, O_GPIOB)
+            switchbankone = toBinary(readSPI(0x46, O_GPIOA))
+            switchbanktwo = toBinary(readSPI(0x46, O_GPIOB))
             global targetshit
             global yardsten
             #   [toprollover 1, toprollover 2,  toprollover 3,  tolrollover4,   ster,   popbumper,  targets,    spinner ] 
             #en [outlane,       achterbank,     bank,           outhole,        /,      /,          /,          /       ]
-            print(switchbank1)
-            print(switchbank2)
+            print(switchbankone)
+            print(switchbanktwo)
            
-            if switchbank1[0] == 1:#toprollover 1
-                if toBinary(readSPI(0x42, OGPIOB)[4]: 
+            if switchbankone[0] == 1:#toprollover 1
+                if toBinary(readSPI(0x42, OGPIOB))[4]: 
                     yard(30)
                 punten(500) 
-            if switchbank1[1] == 1:#toprollover 2
+            if switchbankone[1] == 1:#toprollover 2
                 punten(500)
-                if toBinary(readSPI(0x42, OGPIOB)[5]: 
+                if toBinary(readSPI(0x42, O_GPIOB))[5]: 
                     yard(30)
-            if switchbank1[2] == 1:#toprollover 3
+            if switchbankone[2] == 1:#toprollover 3
                 punten(500)
-                if toBinary(readSPI(0x42, OGPIOB)[6]: 
+                if toBinary(readSPI(0x42, O_GPIOB))[6]: 
                     yard(30)
-            if switchbank1[3] == 1:#toprollover 4
+            if switchbankone[3] == 1:#toprollover 4
                 punten(500)
-                if toBinary(readSPI(0x42, OGPIOB)[7]: 
+                if toBinary(readSPI(0x42, O_GPIOB))[7]: 
                     yard(30)
-            if switchbank1[4] == 1:#ster
+            if switchbankone[4] == 1:#ster
                 punten(100)
                 changeyardsdirection()
 
-            if switchbank1[5] == 1:#popbumper
+            if switchbankone[5] == 1:#popbumper
                 punten(50)
                 yard(1)
                 randomtoplights()
-            if switchbank1[6] == 1:#targets
+            if switchbankone[6] == 1:#targets
                 punten(1000)
                 yard(5)
-            if switchbank1[7] == 1:#spinner
+            if switchbankone[7] == 1:#spinner
                 punten(10) 
                 changeyardsdirection()
-            if switchbank2[0] == 1:#outlane
+            if switchbanktwo[0] == 1:#outlane
                 punten(1000)
                 yard(10)
-            if switchbank2[1] == 1:#achterbank
+            if switchbanktwo[1] == 1:#achterbank
                 punten(500)
                 yard(1)
-            if switchbank2[2] == 1:#bank drop down targers 
+            if switchbanktwo[2] == 1:#bank drop down targers 
                 targetshit = targetshit + 1
     
-            if switchbank2[3] == 1:#outhole
+            if switchbanktwo[3] == 1:#outhole
                 outhole()                                       #place holder function depends on bram 
             if targetshit == 7:
-                if toBinary(readSPI(0x42, O_GPIOB)[2] == 1:
+                if toBinary(readSPI(0x42, O_GPIOB))[2] == 1:
                     goal()
-                elif toBinary(readSPI(0x42, O_GPIOB[3] == 1:
+                elif toBinary(readSPI(0x42, O_GPIOB))[3] == 1:
                     special()
                 targetshit = 0
                 
@@ -314,7 +314,7 @@ def     yard(amount):                                           #Controls the ya
             global yardsdirection                               #    
             global yards                                        #
             global yardsten                                     #
-            yardstate = toBinary(readSPI(0x40, O_GPIOB)         #2de rij in excel bestand
+            yardstate = toBinary(readSPI(0x40, O_GPIOB))         #2de rij in excel bestand
             if yardsdirection == 0:                             #Direction of arrow 0 is to the right, 1 is to the left
                     yards = yards + amount                      #
             elif yardsdirection == 1:                           #
@@ -325,7 +325,7 @@ def     yard(amount):                                           #Controls the ya
             while yards < 1 and yardsten > 0:                   #When the ball is moving backwards we need to go down unless we are already at 0
                     yards = 10 + yards                          #Yards is negative hence "+" this will make yards a single digit number or 10
                     yardsten = yardsten - 1                     #We're going backwards and when we're below 0 in the single yards we go down a ten
-            if yards < 1 and yardsten = 0:                      #If we're totally at the left we can't go more left so we just make yards 1 again
+            if yards < 1 and yardsten == 0:                      #If we're totally at the left we can't go more left so we just make yards 1 again
                     yards = 1                                   #
             if yardsten < 0:                                    #If yardsten somehow goes below 0 we make it 0 just to be sure...
                 yardsten = 0                                    #
@@ -523,15 +523,15 @@ def     randomtoplights():
             toplitestate[7] = random.randint(0, 1)
 
 def     special():                                              #defines what special does
-            
+		print("special got")            
 def     extra_ball():                                           #triggers extra ball lite and does extra ball thing
-            
+            	print("extra ball got")
 def     goal():         
-            if toBinary(readSPI(0x42, O_GPIOA)[7] == 1:         #checks what lite is on, acts according to
+            if toBinary(readSPI(0x42, O_GPIOA))[7] == 1:         #checks what lite is on, acts according to
                 punten(5000)
-            elif toBinary(readSPI(0x42, O_GPIOB)[0] == 1:
+            elif toBinary(readSPI(0x42, O_GPIOB))[0] == 1:
                 extra_ball()
-            elif toBinary(readSPI(0x42, O_GPIOB)[1] == 1:
+            elif toBinary(readSPI(0x42, O_GPIOB))[1] == 1:
                 special()
 
 
@@ -576,7 +576,7 @@ def binToHex(lijst):
     return hex(int(string, 2))
 
 def toggle(opcode, addr, lamp):
-    state = toBinary(readSPI(opcode, addr)
+    state = toBinary(readSPI(opcode, addr))
     if state[lamp] == 0:
         state[lamp] = 1
     elif state[lamp] == 1:
