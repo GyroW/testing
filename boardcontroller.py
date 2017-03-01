@@ -232,6 +232,10 @@ def	main():
 		#inverses polarity of input pins
 		sendSPI(0x46, O_IPOLA, 0xFF)
 		sendSPI(0x46, O_IPOLB, 0xF0)
+		#enable pull up
+		sendSPI(0x46, O_GPPUA, 0xFF)
+		sendSPI(0x46, O_GPPUB, 0xF0)
+
 		while 1:                
                 	Menu("")
 #		debug(0x40)
@@ -240,14 +244,26 @@ def	main():
 #		debug(0x46)
 		
 def	Menu(Error):
-            switchbankone = toBinary(readSPI(0x46, O_GPIOA))
-            switchbanktwo = toBinary(readSPI(0x46, O_GPIOB))
+            readoutAone = toBinary(readSPI(0x46, O_GPIOA))
+            readoutBone = toBinary(readSPI(0x46, O_GPIOB))
+	    time.sleep(0.02)
+	    readoutAtwo = toBinary(readSPI(0x46, O_GPIOA))
+	    readoutBtwo = toBinary(readSPI(0x46, O_GPIOB))
+	    if readoutAone == readoutAtwo:
+		switchbankone = readoutAtwo
+	    else:
+		switchbankone = [0,0,0,0,0,0,0,0]
+	    if readoutBone == readoutBtwo:
+		switchbanktwo = readoutBtwo
+	    else:
+		switchbanktwo = [0,0,0,0,0,0,0,0]
+
             global targetshit
             global yardsten
             #   [toprollover 1, toprollover 2,  toprollover 3,  tolrollover4,   ster,   popbumper,  targets,    spinner ] 
             #en [outlane,       achterbank,     bank,           outhole,        /,      /,          /,          /       ]
-            print(switchbankone)
-            print(switchbanktwo)
+            #print(switchbankone)
+            #print(switchbanktwo)
            
             if switchbankone[0] == 1:#toprollover 1
                 if toBinary(readSPI(0x42, O_GPIOB))[4]: 
@@ -280,7 +296,8 @@ def	Menu(Error):
                 punten(10) 
                 changeyardsdirection()
             if switchbanktwo[0] == 1:#outlane
-                punten(1000)
+                print("outlane")
+		punten(1000)
                 yard(10)
             if switchbanktwo[1] == 1:#achterbank
                 punten(500)
