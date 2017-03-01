@@ -125,11 +125,11 @@ def	sendValue(value):
 				if (value	&	0x80):
 
 						GPIO.output(MOSI,	GPIO.HIGH)
-#						 print("MOSI High")
+
 				else:
  
 						GPIO.output(MOSI,	GPIO.LOW)
-#						 print("MOSI LOW")
+
 				GPIO.output(SCLK,	GPIO.HIGH)
 				GPIO.output(SCLK,	GPIO.LOW)
 	
@@ -212,45 +212,308 @@ def	main():
 
 		GPIO.output(SCLK, GPIO.LOW)
 		reset_regs()
+                #declaring some variables
+                yardsdirection = 0  #0 = right 1 = left
+                yards = 0           #starting yardsunits
+                yardsten = 0        #starting yardsten 
+                points = 0          #testing punten
+                targetshit = 0      #Aantal Targets Hit
 
-		print(readSPI(0x40, O_IODIRA))
+
+#		print(readSPI(0x40, O_IODIRA))
+
+                sendSPI(0x46, O_IODIRA, 0xFF)
+                sendSPI(0x46, O_IODIRB, 0xF0)
 		Menu("")
-		debug(0x40)
-		debug(0x42)
-		debug(0x44)
-		debug(0x46)
+#		debug(0x40)
+#		debug(0x42)
+#		debug(0x44)
+#		debug(0x46)
 		
 def	Menu(Error):
-	
-	
-	#while True:
- 	for i in range(0,256):
- 		print(i)
-		sendSPI(0x40,	O_OLATB,	i)
-		#sendSPI(0x42,	O_OLATB,	i)
-		#sendSPI(0x42,	O_OLATA,	i)
-		#sendSPI(0x44,	O_OLATB,	i)
-		#sendSPI(0x46,	O_OLATB,	255-i)
-		time.sleep(0.01)	
-		#sendSPI(0x42,	O_OLATB,	0x81)	
-		#print(readSPI(0x46, 0x1A))
-	
-	Input = raw_input("Enter to stop")
+            switchbank1 = toBinary(readSPI(0x46, O_GPIOA)
+            switchbank2 = toBinary(readSPI(0x46, O_GPIOB)
+            global targetshit
+            global yardsten
+            #   [toprollover 1, toprollover 2,  toprollover 3,  tolrollover4,   ster,   popbumper,  targets,    spinner ] 
+            #en [outlane,       achterbank,     bank,           outhole,        /,      /,          /,          /       ]
+            print(switchbank1)
+            print(switchbank2)
+           
+            if switchbank1[0] == 1:#toprollover 1
+                if toBinary(readSPI(0x42, OGPIOB)[7]: 
+                    yard(30)
+                punten(500) 
+            if switchbank1[1] == 1:#toprollover 2
+                punten(500)
+            if switchbank1[2] == 1:#toprollover 3
+                punten(500)
+            if switchbank1[3] == 1:#toprollover 4
+                punten(500)
+            if switchbank1[4] == 1:#ster
+               punten(100)
+               changeyardsdirection()
 
-	print("0x09=0x{0:02X}".format(readSPI(0x40,	I_GPIOA)))	#0x09 leest uit van 1ste rij
-	print("0x19=0x{0:02X}".format(readSPI(0x40,	I_GPIOB)))	#0x19 leest uit van 2de rij
-#		print(readSPI(0x42,	0x09))		 
-#		print(readSPI(0x42,	0x19))
-# 		print(readSPI(0x44,	0x09))
-#              	print(readSPI(0x44,	0x19))
-#              	print(readSPI(0x46,	0x09))
-#              	print(readSPI(0x46,	0x19))
-#
+            if switchbank1[5] == 1:#popbumper
+                
+            if switchbank1[6] == 1:#targets
+                targetshit = targetshit + 1
+            if switchbank1[7] == 1:#spinner
+                punten(10)    
+            if switchbank2[0] == 1:#outlane
+                punten(1000)
+                yard(10)
+            if switchbank2[1] == 1:#achterbank
+                punten(500)
+                yard(5)
+            if switchbank2[2] == 1:#bank
+                
+            if switchbank2[3] == 1:#outhole
+                
+            if targetshit == 7:
+                if toBinary(readSPI(0x42, O_GPIOB)[2] == 1:
+                    goal()
+                elif toBinary(readSPI(0x42, O_GPIOB[3] == 1:
+                    special()
+                targetshit = 0
+                
+            if yardsten == 11:
+                goal()
+                yardsten = 0
 
 
 
+def     changeyardsdirection():                                 #changes what direction the yards should go to, when triggered
+            global yardsdirection                               #toggles direction
+            if yardsdirection == 0:
+                yardsdirection = 1
+            elif yardsdirection == 1:
+                yarddirection = 0
+            print(yarddirection)                                #debug 
+            toggle(0x42, O_GPIOA, 2)
+            toggle(0x42, O_GPIOA, 3)
+
+def     yard(amount):
+            global yardsdirection                               #    
+            global yards                                        #
+            global yardsten                                     #
+            yardstate = toBinary(readSPI(0x40, O_GPIOB)         #2de rij in excel bestand
+            if yardsdirection == 0:                             #
+                    yards = yards + amount                      #
+            elif yardsdirection == 1:                           #
+                    yards = yards - amount                      #
+            while yards > 10:                                   #Als yards meer is dan 10 dan moeten we yardsten optellen 
+                    yardsten = yardsten + 1                     #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    yards = yards - 10                          #als pijltje omgekeerd staat!!!
+            if yards < 1:
+                    yards = 1
+            if yards == 1:
+                    sendSPI(0x40, O_GPIOA, 0x80)                #1ste rij in excel bestand
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 2:
+                    sendSPI(0x40, O_GPIOA, 0x40)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 3:
+                    sendSPI(0x40, O_GPIOA, 0x20)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 4:
+                    sendSPI(0x40, O_GPIOA, 0x10)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 5:
+                    sendSPI(0x40, O_GPIOA, 0x08)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 6:
+                    sendSPI(0x40, O_GPIOA, 0x04)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 7:
+                    sendSPI(0x40, O_GPIOA, 0x02)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 8:
+                    sendSPI(0x40, O_GPIOA, 0x01)
+                    yardstate[0] = 0
+                    yardstate[1] = 0
+            if yards == 9:
+                    sendSPI(0x40, O_GPIOA, 0x00)
+                    yardstate[0] = 1
+                    yardstate[1] = 0
+            if yards == 10:
+                    sendSPI(0x40, O_GPIOA, 0x00)
+                    yardstate[0] = 0
+                    yardstate[1] = 1
+            
+            yardstateB = toBinary(readSPI(0x42, O_GPIOA))       #leest 3de rij in excel bestand
+            
+            if yardsten == 1:                                   #Yards Heel links
+                    yardstate[2] =  1
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 2:
+                    yardstate[2] =  0
+                    yardstate[3] =  1
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 3:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  1
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 4:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  1
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 5:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  1
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 6:                                   #Yards int midden   
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  1
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 7:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 1
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 8:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 1
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 9:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 1
+                    yardstateB[3] = 0
+                    yardstateB[4] = 0
+            if yardsten == 10:
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 1
+                    yardstateB[4] = 0
+            if yardsten == 11:                                  #Yards heel rechts 
+                    yardstate[2] =  0
+                    yardstate[3] =  0
+                    yardstate[4] =  0
+                    yardstate[5] =  0
+                    yardstate[6] =  0
+                    yardstate[7] =  0
+                    yardstateB[0] = 0
+                    yardstateB[1] = 0
+                    yardstateB[2] = 0
+                    yardstateB[3] = 0
+                    yardstateB[4] = 1
 
 
+
+            sendSPI(0x40, O_GPIOB, binToHex(yardstate))         #sets lites according to what yards we're on
+            sendSPI(0x42, O_GPIOA, binToHex(yardstateB))
+            print(yardstate)                                    #debug
+            print(yardstateB)
+               
+
+
+
+                    
+
+
+def     special():                                              #defines what special does
+            
+def     extra_ball():                                           #triggers extra ball lite and does extra ball thing
+            
+def     goal():         
+            if toBinary(readSPI(0x42, O_GPIOA)[7] == 1:         #checks what lite is on, acts according to
+                punten(5000)
+            elif toBinary(readSPI(0x42, O_GPIOB)[0] == 1:
+                extra_ball()
+            elif toBinary(readSPI(0x42, O_GPIOB)[1] == 1:
+                special()
+
+
+def     punten(amount):                                         #placeholder punten functie (bram)
+            global points 
+            points = points + amount    
+            print(points) 
+                    
 def 	debug(code):
 
 		print(code,	"O_IODIRA  ",	 	readSPI(code,	O_IODIRA  ))
@@ -274,7 +537,27 @@ def 	debug(code):
 		print(code,	"O_GPIOA   ",		readSPI(code,	O_GPIOA   ))
 		print(code,	"O_GPIOB   ",		readSPI(code,	O_GPIOB   ))
 		print(code,	"O_OLATA   ",		readSPI(code,	O_OLATA   ))
-		print(code,	"O_OLATB   ",		readSPI(code, O_OLATB   ))
+		print(code,	"O_OLATB   ",		readSPI(code,   O_OLATB   ))
+
+def toBinary(getal):
+    binair = str("{0:b}".format(getal))
+    length = 8 - len(binair)
+    binair = ('0' * length + binair)
+    return list(map(int, list(binair)))
+     
+def binToHex(lijst):
+    string = ''.join(map(str, lijst))
+    return hex(int(string, 2))
+
+def toggle(opcode, addr, lamp):
+    state = toBinary(readSPI(opcode, addr)
+    if state[lamp] == 0:
+        state[lamp] = 1
+    elif state[lamp] == 1:
+        state[lamp] = 0
+    sendSPI(opcode, addr, binToHex(state))
+
+
 
 
 if __name__ == '__main__':
