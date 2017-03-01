@@ -121,7 +121,7 @@ O_OLATB    = 0x15
 def	sendValue(value):
 
 		for	i	in range(8):
-
+				
 				if (value	&	0x80):
 
 						GPIO.output(MOSI,	GPIO.HIGH)
@@ -198,7 +198,7 @@ def reset_regs():
 
 				
 
-yardsdirection = 0  #0 = right 1 = left
+yarddirection = 0  #0 = right 1 = left
 yards = 0           #starting yardsunits
 yardsten = 0        #starting yardsten 
 points = 0          #testing punten
@@ -229,6 +229,9 @@ def	main():
                 sendSPI(0x40, O_GPIOB, 0x20)
                 sendSPI(0x42, O_GPIOA, 0x03)
                 sendSPI(0x42, O_GPIOB, 0x2A)
+		#inverses polarity of input pins
+		sendSPI(0x46, O_IPOLA, 0xFF)
+		sendSPI(0x46, O_IPOLB, 0xF0)
 		while 1:                
                 	Menu("")
 #		debug(0x40)
@@ -247,7 +250,7 @@ def	Menu(Error):
             print(switchbanktwo)
            
             if switchbankone[0] == 1:#toprollover 1
-                if toBinary(readSPI(0x42, OGPIOB))[4]: 
+                if toBinary(readSPI(0x42, O_GPIOB))[4]: 
                     yard(30)
                 punten(500) 
             if switchbankone[1] == 1:#toprollover 2
@@ -301,23 +304,25 @@ def	Menu(Error):
 
 
 def     changeyardsdirection():                                 #changes what direction the yards should go to, when triggered
-            global yardsdirection                               #toggles direction
-            if yardsdirection == 0:
-                yardsdirection = 1
-            elif yardsdirection == 1:
+            global yarddirection                               #toggles direction
+            if yarddirection == 0:
+                yarddirection = 1
+            elif yarddirection == 1:
                 yarddirection = 0
-            print(yarddirection)                                #debug 
+            #print(yarddirection)                                #debug 
             toggle(0x42, O_GPIOA, 2)
             toggle(0x42, O_GPIOA, 3)
 
 def     yard(amount):                                           #Controls the yardage and corresponding lights!
-            global yardsdirection                               #    
+            #print(yards)
+	    #print(yardsten)
+	    global yarddirection                               #    
             global yards                                        #
             global yardsten                                     #
             yardstate = toBinary(readSPI(0x40, O_GPIOB))         #2de rij in excel bestand
-            if yardsdirection == 0:                             #Direction of arrow 0 is to the right, 1 is to the left
+            if yarddirection == 0:                             #Direction of arrow 0 is to the right, 1 is to the left
                     yards = yards + amount                      #
-            elif yardsdirection == 1:                           #
+            elif yarddirection == 1:                           #
                     yards = yards - amount                      #
             while yards > 10:                                   #If we are multiple times over 10 hence the while loop
                     yardsten = yardsten + 1                     #If we go above 10 we add to the yardsten (issue with splitting numbers)
@@ -509,8 +514,8 @@ def     yard(amount):                                           #Controls the ya
 
             sendSPI(0x40, O_GPIOB, binToHex(yardstate))         #sets lites according to what yards we're on
             sendSPI(0x42, O_GPIOA, binToHex(yardstateB))
-            print(yardstate)                                    #debug
-            print(yardstateB)
+            #print(yardstate)                                    #debug
+            #print(yardstateB)
                
 
 
@@ -533,7 +538,8 @@ def     goal():
                 extra_ball()
             elif toBinary(readSPI(0x42, O_GPIOB))[1] == 1:
                 special()
-
+def	outhole():
+		print("bal kwijt")
 
 def     punten(amount):                                         #placeholder punten functie (bram)
             global points 
@@ -573,7 +579,7 @@ def toBinary(getal):
      
 def binToHex(lijst):
     string = ''.join(map(str, lijst))
-    return hex(int(string, 2))
+    return int(string, 2)
 
 def toggle(opcode, addr, lamp):
     state = toBinary(readSPI(opcode, addr))
