@@ -37,6 +37,5 @@ def     yard(amount):
                     yards = 0
             print(yards)
             print(yardsten)
-yard(30)
-yard(2)
+print(toBinary(85))
 

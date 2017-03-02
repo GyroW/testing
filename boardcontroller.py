@@ -251,7 +251,7 @@ def	Menu(Error):
 	    readoutBtwo = toBinary(readSPI(0x46, O_GPIOB))
 	    if readoutAone == readoutAtwo:
 		switchbankone = readoutAtwo
-	    else:
+            else:
 		switchbankone = [0,0,0,0,0,0,0,0]
 	    if readoutBone == readoutBtwo:
 		switchbanktwo = readoutBtwo
