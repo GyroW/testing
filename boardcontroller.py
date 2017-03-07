@@ -140,6 +140,8 @@ def     sendValue(value):
 def     sendSPI(opcode, addr,   data):
 
                 GPIO.output(CS, GPIO.LOW)
+                if addr == "O_GPIOA" or addr == "O_GPIOB":
+                    data = data ^ 0xFF
 
                 sendValue(opcode|SPI_SLAVE_WRITE)
 
@@ -361,38 +363,38 @@ def     Menu(a,b):
 
 
 def     changeyardsdirection():                                 #changes what direction the yards should go to, when triggered
-            global yarddirection                               #toggles direction
+            global yarddirection                                #toggles direction
             if yarddirection == 0:
                 yarddirection = 1
             elif yarddirection == 1:
                 yarddirection = 0
-            #print(yarddirection)                                #debug 
+            #print(yarddirection)                               #debug 
             toggle(0x42, O_GPIOA, 2)
             toggle(0x42, O_GPIOA, 3)
 
 def     yard(amount):                                           #Controls the yardage and corresponding lights!
             #print(yards)
             #print(yardsten)
-            global yarddirection                               #    
+            global yarddirection                                #    
             global yards                                        #
             global yardsten                                     #
-            yardstate = toBinary(readSPI(0x40, O_GPIOB))         #2de rij in excel bestand
-            if yarddirection == 0:                             #Direction of arrow 0 is to the right, 1 is to the left
-                yards = yards + amount                      #
-            elif yarddirection == 1:                           #
-                yards = yards - amount                      #
+            yardstate = toBinary(readSPI(0x40, O_GPIOB))        #2de rij in excel bestand
+            if yarddirection == 0:                              #Direction of arrow 0 is to the right, 1 is to the left
+                yards = yards + amount                          #
+            elif yarddirection == 1:                            #
+                yards = yards - amount                          #
             while yards > 10:                                   #If we are multiple times over 10 hence the while loop
-                yardsten = yardsten + 1                     #If we go above 10 we add to the yardsten (issue with splitting numbers)
-                yards = yards - 10                          #Subtract 10 from yards to get to our number
+                yardsten = yardsten + 1                         #If we go above 10 we add to the yardsten (issue with splitting numbers)
+                yards = yards - 10                              #Subtract 10 from yards to get to our number
             while yards < 1 and yardsten > 0:                   #When the ball is moving backwards we need to go down unless we are already at 0
-                yards = 10 + yards                          #Yards is negative hence "+" this will make yards a single digit number or 10
-                yardsten = yardsten - 1                     #We're going backwards and when we're below 0 in the single yards we go down a ten
-            if yards < 1 and yardsten == 0:                      #If we're totally at the left we can't go more left so we just make yards 1 again
-                yards = 1                                   #
+                yards = 10 + yards                              #Yards is negative hence "+" this will make yards a single digit number or 10
+                yardsten = yardsten - 1                         #We're going backwards and when we're below 0 in the single yards we go down a ten
+            if yards < 1 and yardsten == 0:                     #If we're totally at the left we can't go more left so we just make yards 1 again
+                yards = 1                                       #
             if yardsten < 0:                                    #If yardsten somehow goes below 0 we make it 0 just to be sure...
                 yardsten = 0                                    #
             if yards == 1:
-                sendSPI(0x40, O_GPIOA, 0x80)                #1ste rij in excel bestand
+                sendSPI(0x40, O_GPIOA, 0x80)                    #1ste rij in excel bestand
                 yardstate[0] = 0
                 yardstate[1] = 0
             if yards == 2:
@@ -578,16 +580,18 @@ def     yard(amount):                                           #Controls the ya
 
 
 def     randomtoplights():
-            toplitestate = toBinary(readSPI(0x42, O_GPIOB))
-            toplitestate[4] = random.randint(0, 1)
-            toplitestate[5] = random.randint(0, 1)
-            toplitestate[6] = random.randint(0, 1)
-            toplitestate[7] = random.randint(0, 1)
-
+            toplitestateA = toBinary(readSPI(0x44, O_GPIOA))    
+            toplitestataB = toBinary(readSPI(0x44, O_GPIOB))
+            toplitestateA[3] = random.randint(0, 1)             
+            toplitestateB[4] = random.randint(0, 1)             
+            toplitestateA[4] = random.randint(0, 1)             
+            toplitestateB[5] = random.randint(0, 1)             
+            sendSPI(0x44, O_GPIOA, binToHex(toplitestateA)) 
+            sendSPI(0x44, O_GPIOB, binToHex(toplitestateB)) 
 def     special():                                              #defines what special does
                 print("special got")            
 def     extra_ball():                                           #triggers extra ball lite and does extra ball thing
-                toggle(0x44, O_GPIOB, 3)
+                toggle(0x44, O_GPIOA, 5)
                 print("extra ball got")
 def     goal():         
             if toBinary(readSPI(0x42, O_GPIOA))[7] == 1:        #checks what lite is on, acts according to
@@ -599,8 +603,8 @@ def     goal():
             addbonus(2000)
 def     outhole():                                              #Need to know how bram will handle next player, I'll act according to
             print("bal kwijt")                                  #Needs add bonus function that will add the bonus to the player
-            if toBinary(readSPI(0x44, O_GPIOB))[3] == 1:
-                toggle(0x44, O_GPIOB, 3)
+            if toBinary(readSPI(0x44, O_GPIOA))[5] == 1:
+                toggle(0x44, O_GPIOA, 5)
 
             countbonus()
             addbonus(0)
@@ -616,8 +620,8 @@ def     outhole():                                              #Need to know ho
             sleep(2)
             eject()
 def     eject()
-            toggle(0x44, O_GPIOB, 4)
-            toggle(0x44, O_GPIOB, 4)
+            toggle(0x44, O_GPIOB, 6)
+            toggle(0x44, O_GPIOB, 6)
 
 def     punten(amount):                                         #placeholder punten functie (bram)
             global points 
@@ -628,12 +632,13 @@ def     addbonus(amount):                                          #Only 1000*n
             global bonus
             bonuslitesstateA =  toBinary(readSPI(0x44, O_GPIOA))
             bonuslitesstateB =  toBinary(readSPI(0x44, O_GPIOB))
+            bonuslitesstateC =  toBinary(readSPI(0x42, O_GPIOB))
             goalscorestateA =   toBinary(readSPI(0x42, O_GPIOA))
             goalscorestateB =   toBinary(readSPI(0x42, O_GPIOB))
             bonus = bonus + amount
             if bonus < 5000:
                 goalscorestateA[7] = 1
-                goalscorestateB[0] = 1
+                goalscorestateB[0] = 0
                 goalscorestateB[1] = 0
                
             if bonus == 12000 and goalscorestateA[7] == 1:
@@ -648,101 +653,115 @@ def     addbonus(amount):                                          #Only 1000*n
             if bonus > 10000:
                 bonus = 10000
             if bonus == 1000:
-                bonuslitestateA[0] =1 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =1                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 2000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =1 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =1                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 3000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =1 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =1                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 4000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =1 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =1                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 5000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =1 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =1                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 6000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =1 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =1                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 7000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =1 
-                bonuslitestateA[7] =0 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =1                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 8000:
-                bonuslitestateA[0] =0 
-                bonuslitestateA[1] =0 
-                bonuslitestateA[2] =0 
-                bonuslitestateA[3] =0 
-                bonuslitestateA[4] =0 
-                bonuslitestateA[5] =0 
-                bonuslitestateA[6] =0 
-                bonuslitestateA[7] =1 
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =1                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 9000:
-                sendSPI(0x44, O_GPIOA, 0x00)
-                bonuslitestateB[0] =1 
-                bonuslitestateB[1] =0 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =1                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =0                           #10000      0x44, O_GPIOB, 1
             if bonus == 10000:
-                sendSPI(0x44, O_GPIOA, 0x00)
-                bonuslitestateB[0] =0 
-                bonuslitestateB[1] =1 
+                bonuslitestateA[0] =0                           #1000       0x44, O_GPIOA, 0
+                bonuslitestateA[1] =0                           #2000       0x44, O_GPIOA, 1
+                bonuslitestateA[2] =0                           #3000       0x44, O_GPIOA, 2
+                bonuslitestateC[4] =0                           #4000       0x42, O_GPIOB, 4
+                bonuslitestateC[5] =0                           #5000       0x42, O_GPIOB, 5
+                bonuslitestateC[6] =0                           #6000       0x42, O_GPIOB, 6
+                bonuslitestateC[7] =0                           #7000       0x42, O_GPIOB, 7
+                bonuslitestateB[3] =0                           #8000       0x44, O_GPIOB, 3
+                bonuslitestateB[0] =0                           #9000       0x44, O_GPIOB, 0
+                bonuslitestateB[1] =1                           #10000      0x44, O_GPIOB, 1
             sendSPI(0x44, O_GPIOA, binToHex(bonuslitestateA))
             sendSPI(0x44, O_GPIOB, binToHex(bonuslitestateB))
             sendSPI(0x42, O_GPIOA, binToHex(goalscorestateA))
