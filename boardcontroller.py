@@ -140,9 +140,10 @@ def     sendValue(value):
 def     sendSPI(opcode, addr,   data):
 
                 GPIO.output(CS, GPIO.LOW)
-                if addr == "O_GPIOA" or addr == "O_GPIOB":
+                if addr == O_GPIOA or addr == O_GPIOB:
+		    print(data)
                     data = data ^ 0xFF
-
+		    print(data)
                 sendValue(opcode|SPI_SLAVE_WRITE)
 
                 sendValue(addr)
@@ -206,6 +207,7 @@ yardsten = 0        #starting yardsten
 points = 0          #testing punten
 targetshit = 0      #Aantal Targets Hit
 bonus = 0
+ballingame = 0
 
 class Feeler:                                                   #Debouncing utility, starts a new instance every time we start counting again so we don't overlap
         def __init__(m,maxv,func):
@@ -261,23 +263,31 @@ def     main():
                 sendSPI(0x46, O_IODIRA, 0xFF)                   #Sets the switches as input instead of output
                 sendSPI(0x46, O_IODIRB, 0xF0)
                 #Start of game lights:
-                sendSPI(0x40, O_GPIOA, 0x80)
-                sendSPI(0x40, O_GPIOB, 0x20)
-                sendSPI(0x42, O_GPIOA, 0x03)
-                sendSPI(0x42, O_GPIOB, 0x2A)
-                #inverses polarity of input pins:
+                sendSPI(0x40, O_GPIOA, 0x80)			#Sets lites: 	Yard 1
+                sendSPI(0x40, O_GPIOB, 0x20)			#		Yards left
+                sendSPI(0x42, O_GPIOA, 0x05)			#		Pijltje Links en Goal 5000
+                sendSPI(0x42, O_GPIOB, 0x10)			#		LTD Goal 
+                randomtoplights()
+		#inverses polarity of input pins:
                 sendSPI(0x46, O_IPOLA, 0xFF)
                 sendSPI(0x46, O_IPOLB, 0xF0)
                 #enable pull up:
                 sendSPI(0x46, O_GPPUA, 0xFF)
                 sendSPI(0x46, O_GPPUB, 0xF0)
+                print(yarddirection)
+#		sendSPI(0x40, O_GPIOA, 0xFF)
+#		sendSPI(0x40, O_GPIOB, 0xFF)
+#		sendSPI(0x42, O_GPIOA, 0xFF)
+#		sendSPI(0x42, O_GPIOB, 0xFF)
+#		sendSPI(0x44, O_GPIOA, 0xFF)
+#		sendSPI(0x44, O_GPIOB, 0xFF)
 
-                while 1:                
+		while 1:                
                         Scan.feel()
-#               debug(0x40)
-#               debug(0x42)
-#               debug(0x44)
-#               debug(0x46)
+#                debug(0x40)
+ #               debug(0x42)
+  #              debug(0x44)
+   #             debug(0x46)
 
 
 
@@ -293,7 +303,7 @@ def     main():
 def     Menu(a,b):
             switchbankone=toBinary(a)
             switchbanktwo=toBinary(b)
-
+	    print(bonus)
 
             global targetshit
             global yardsten
@@ -581,7 +591,7 @@ def     yard(amount):                                           #Controls the ya
 
 def     randomtoplights():
             toplitestateA = toBinary(readSPI(0x44, O_GPIOA))    
-            toplitestataB = toBinary(readSPI(0x44, O_GPIOB))
+            toplitestateB = toBinary(readSPI(0x44, O_GPIOB))
             toplitestateA[3] = random.randint(0, 1)             
             toplitestateB[4] = random.randint(0, 1)             
             toplitestateA[4] = random.randint(0, 1)             
@@ -608,7 +618,7 @@ def     outhole():                                              #Need to know ho
 
             countbonus()
             addbonus(0)
-            LTD = toBinary(readSPI(0x42, O_GPIOB)
+            LTD = toBinary(readSPI(0x42, O_GPIOB))
             if ballingame == 5: 
                 LTD[2] = 0
                 LTD[3] = 1
@@ -617,9 +627,9 @@ def     outhole():                                              #Need to know ho
                 LTD[3] = 0
             
             
-            sleep(2)
+            time.sleep(2)
             eject()
-def     eject()
+def     eject():
             toggle(0x44, O_GPIOB, 6)
             toggle(0x44, O_GPIOB, 6)
 
@@ -630,9 +640,9 @@ def     punten(amount):                                         #placeholder pun
 
 def     addbonus(amount):                                          #Only 1000*n
             global bonus
-            bonuslitesstateA =  toBinary(readSPI(0x44, O_GPIOA))
-            bonuslitesstateB =  toBinary(readSPI(0x44, O_GPIOB))
-            bonuslitesstateC =  toBinary(readSPI(0x42, O_GPIOB))
+            bonuslitestateA =  toBinary(readSPI(0x44, O_GPIOA))
+            bonuslitestateB =  toBinary(readSPI(0x44, O_GPIOB))
+            bonuslitestateC =  toBinary(readSPI(0x42, O_GPIOB))
             goalscorestateA =   toBinary(readSPI(0x42, O_GPIOA))
             goalscorestateB =   toBinary(readSPI(0x42, O_GPIOB))
             bonus = bonus + amount
