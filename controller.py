@@ -330,7 +330,7 @@ def togglevar(var):
 def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and sends it to the chip
     list0x40A = [DictSingleyards['yard1'], DictSingleyards['yard2'], DictSingleyards['yard3'], DictSingleyards['yard4'], DictSingleyards['yard5'], DictSingleyards['yard6'], DictSingleyards['yard7'], DictSingleyards['yard8']]
     list0x40B = [DictSingleyards['yard9'], DictSingleyards['yard10'], DictDecayards['yardsleft'],  DictDecayards['yards10'], DictDecayards['yards20'], DictDecayards['yards30'], DictDecayards['yards40'], DictDecayards['yards50']]
-    list0x42A = [DictDecayards['yards-40'], DictDecayards['yards-30'], DictDecayards['yards-20'], DictDecayards['yards-10'], DictDecayards['yardsright'], DictPijltjes['left'], DictPijltjes['right'], DictGoalscores['5000']]
+    list0x42A = [DictDecayards['yards-40'], DictDecayards['yards-30'], DictDecayards['yards-20'], DictDecayards['yards-10'], DictDecayards['yardsright'], DictPijltjes['right'], DictPijltjes['left'], DictGoalscores['5000']]
     list0x42B = [DictGoalscores['extra ball'], DictGoalscores['special'], DictLTDscores['goal'], DictLTDscores['special'], DictBonus['4000'], DictBonus['5000'], DictBonus['6000'], DictBonus['7000']] 
     list0x44A = [DictBonus['1000'], DictBonus['2000'], DictBonus['3000'], Dict30yardswlit['1'], Dict30yardswlit['3'], ShootAgain, 1, 1]
     list0x44B = [DictBonus['9000'], DictBonus['10000'], DoubleBonus, DictBonus['8000'], Dict30yardswlit['2'], Dict30yardswlit['4'], Kicker, 1]
