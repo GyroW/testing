@@ -214,7 +214,9 @@ def main():             #Hoofdprogramma
     setlites()
     for addr in [0x40, 0x42, 0x44]:
         for side in [O_GPIOA, O_GPIOB]:
-            walkinglight(addr, side, 5)
+            walkinglight(addr, side, 1)
+            sendSPI(addr, side, 0xFF)
+
     
 #    while 1:
 #        Scan.feel()
@@ -319,8 +321,8 @@ def setlites():
     list0x40B = [DictSingleyards['yard9'], DictSingleyards['yard10'], DictDecayards['yardsleft'],  DictDecayards['yards10'], DictDecayards['yards20'], DictDecayards['yards30'], DictDecayards['yards40'], DictDecayards['yards50']]
     list0x42A = [DictDecayards['yards-40'], DictDecayards['yards-30'], DictDecayards['yards-20'], DictDecayards['yards-10'], DictDecayards['yardsright'], DictPijltjes['left'], DictPijltjes['right'], DictGoalscores['5000']]
     list0x42B = [DictGoalscores['extra ball'], DictGoalscores['special'], DictLTDscores['goal'], DictLTDscores['special'], DictBonus['4000'], DictBonus['5000'], DictBonus['6000'], DictBonus['7000']] 
-    list0x44A = [DictBonus['1000'], DictBonus['2000'], DictBonus['3000'], Dict30yardswlit['1'], Dict30yardswlit['3'], ShootAgain, 0, 0]
-    list0x44B = [DictBonus['9000'], DictBonus['10000'], DoubleBonus, DictBonus['8000'], Dict30yardswlit['2'], Dict30yardswlit['4'], Kicker, 0]
+    list0x44A = [DictBonus['1000'], DictBonus['2000'], DictBonus['3000'], Dict30yardswlit['1'], Dict30yardswlit['3'], ShootAgain, 1, 1]
+    list0x44B = [DictBonus['9000'], DictBonus['10000'], DoubleBonus, DictBonus['8000'], Dict30yardswlit['2'], Dict30yardswlit['4'], Kicker, 1]
      
     hex0x40A = mkhex(list0x40A)
     hex0x40B = mkhex(list0x40B)
