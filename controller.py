@@ -211,7 +211,7 @@ yardsdirection = True #Go to Right
     
 def main():             #Hoofdprogramma
     setup()
-#    walkinglight(0x40, O_GPIOA, 1) 
+    walkinglight(0x40, O_GPIOA, 1) 
 #    while 1:
 #        Scan.feel()
 ######################################
