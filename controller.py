@@ -182,6 +182,11 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     #Inverse Polarity of Input 
     sendSPI(0x46, O_IPOLA, 0xFF)
     sendSPI(0x46, O_IPOLB, 0xFF)
+    #Starting Ligts
+    DictPijltjes['right'] = 0
+    DictLTDscores['goal'] = 0
+    DictGoalscores['5000'] = 0
+
 
 #starting dictionaries
 DictSingleyards = {'yard1': 1, 'yard2': 1, 'yard3': 1, 'yard4': 1, 'yard5': 1, 'yard6': 1, 'yard7': 1, 'yard8': 1, 'yard9' :1, 'yard10': 1} #1 -10
@@ -211,11 +216,16 @@ yardsdirection = True #Go to Right
     
 def main():             #Hoofdprogramma
     setup()
-    setlites()
+    
     for addr in [0x40, 0x42, 0x44]:
         for side in [O_GPIOA, O_GPIOB]:
             walkinglight(addr, side, 1)
             sendSPI(addr, side, 0xFF)
+                
+
+
+
+
 
     
 #    while 1:
@@ -298,6 +308,7 @@ def walkinglight(opcode, addr, speed):     #Om alle lampjes te testen
         listwalk = [1, 1, 1, 1, 1, 1, 1, 1] 
         listwalk[i] = 0 
         sendSPI(opcode, addr, mkhex(listwalk))
+        print(opcode, addr, i)
         time.sleep(speed)
 
 def mklst(x):           #Maakt van een hexadecimaal getal een binaire lijst
@@ -316,7 +327,7 @@ def togglevar(var):
         var = True
     return var
 
-def setlites():
+def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and sends it to the chip
     list0x40A = [DictSingleyards['yard1'], DictSingleyards['yard2'], DictSingleyards['yard3'], DictSingleyards['yard4'], DictSingleyards['yard5'], DictSingleyards['yard6'], DictSingleyards['yard7'], DictSingleyards['yard8']]
     list0x40B = [DictSingleyards['yard9'], DictSingleyards['yard10'], DictDecayards['yardsleft'],  DictDecayards['yards10'], DictDecayards['yards20'], DictDecayards['yards30'], DictDecayards['yards40'], DictDecayards['yards50']]
     list0x42A = [DictDecayards['yards-40'], DictDecayards['yards-30'], DictDecayards['yards-20'], DictDecayards['yards-10'], DictDecayards['yardsright'], DictPijltjes['left'], DictPijltjes['right'], DictGoalscores['5000']]
@@ -331,12 +342,12 @@ def setlites():
     hex0x44A = mkhex(list0x44A)
     hex0x44B = mkhex(list0x44B)
     
-    print(hex0x40A)
-    print(hex0x40B)
-    print(hex0x42A)
-    print(hex0x42B)
-    print(hex0x44A)
-    print(hex0x44B)
+#    print(hex0x40A)
+#    print(hex0x40B)
+#    print(hex0x42A)
+#    print(hex0x42B)
+#    print(hex0x44A)
+#    print(hex0x44B)
     sendSPI(0x40, O_GPIOA, hex0x40A) 
     sendSPI(0x40, O_GPIOB, hex0x40B) 
     sendSPI(0x42, O_GPIOA, hex0x42A) 
