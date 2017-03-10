@@ -173,6 +173,15 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     GPIO.output(CS, GPIO.HIGH)
     GPIO.output(SCLK, GPIO.LOW)
     reset_regs()
+    #Set as Input
+    sendSPI(0x46, O_IODIRA, 0xFF)
+    sendSPI(0x46, O_IODIRB, 0xFF)
+    #Enable Pullup
+    sendSPI(0x46, O_GPPUA, 0xFF)
+    sendSPI(0x46, O_GPPUB, 0xFF)
+    #Inverse Polarity of Input 
+    sendSPI(0x46, O_IPOLA, 0xFF)
+    sendSPI(0x46, O_IPOLB, 0xFF)
 
 #starting dictionaries
 DictSingleyards = {'yard1': 1, 'yard2': 1, 'yard3': 1, 'yard4': 1, 'yard5': 1, 'yard6': 1, 'yard7': 1, 'yard8': 1, 'yard9' :1, 'yard10': 1} #1 -10
@@ -202,8 +211,9 @@ yardsdirection = True #Go to Right
     
 def main():             #Hoofdprogramma
     setup()
-    while 1:
-        Scan.feel()
+    walkinglight(0x40, O_GPIOA, 1) 
+#    while 1:
+#        Scan.feel()
 ######################################
 #Speelfuncties
 ######################################
@@ -331,7 +341,7 @@ def setlites():
     
 if __name__ == '__main__':
         
-            Scan=Feeler(30,Menu)
+#            Scan=Feeler(30,Menu)
 
             main()
                 
