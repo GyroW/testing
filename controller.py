@@ -136,8 +136,8 @@ def reset_regs():
         sendSPI(device_address,O_IODIRA,0x00)   # all pins output
         sendSPI(device_address,O_IODIRB,0x00)   # all pins output
         #clear all other registers except O_IOCON and O_IOCON_2
-    for regaddress in [O_IPOLA, O_IPOLB, O_GPINTENA, O_GPINTENB, O_DEFVALA, O_DEFVALB, O_INTCONA, O_INTCONB, O_GPPUA, O_GPPUB, O_INTFA, O_INTFB, O_INTCAPA, O_INTCAPB, O_GPIOA, O_GPIOB, O_OLATA, O_OLATB]:
-        sendSPI(device_address,regaddress,0)
+        for regaddress in [O_IPOLA, O_IPOLB, O_GPINTENA, O_GPINTENB, O_DEFVALA, O_DEFVALB, O_INTCONA, O_INTCONB, O_GPPUA, O_GPPUB, O_INTFA, O_INTFB, O_INTCAPA, O_INTCAPB, O_GPIOA, O_GPIOB, O_OLATA, O_OLATB]:
+            sendSPI(device_address,regaddress,0)
 
 class Feeler:                                                   #Debouncing utility, starts a new instance every time we start counting again so we don't overlap
     def __init__(m,maxv,func):
