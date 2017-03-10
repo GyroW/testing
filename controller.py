@@ -211,6 +211,7 @@ yardsdirection = True #Go to Right
     
 def main():             #Hoofdprogramma
     setup()
+    setlites()
     for addr in [0x40, 0x42, 0x44]:
         for side in [O_GPIOA, O_GPIOB]:
             walkinglight(addr, side, 5)
@@ -291,7 +292,7 @@ def debug(code):        #Leest elke adres van een bepaalde IC uit
         print(code, i, "=", readSPI(code, i)) 
 
 def walkinglight(opcode, addr, speed):     #Om alle lampjes te testen
-    for i in range(0,7):
+    for i in range(0,8):                    #8 not inclusive
         listwalk = [1, 1, 1, 1, 1, 1, 1, 1] 
         listwalk[i] = 0 
         sendSPI(opcode, addr, mkhex(listwalk))
