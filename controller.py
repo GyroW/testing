@@ -209,7 +209,8 @@ DoubleBonus = 1
 Kicker = 1
 yardsvalue = 0
 decayardsvalue = 0
-yardsdirection = True #Go to Right
+#Yardsdirection is deprecated as it is now handled with DictPijltjes
+
 #setup inputs
 
 #setup pull-up resistors
@@ -217,19 +218,77 @@ yardsdirection = True #Go to Right
 def main():             #Hoofdprogramma
     setup()
     setlites()    
-    for addr in [0x40, 0x42, 0x44]:
-        for side in [O_GPIOA, O_GPIOB]:
-            walkinglight(addr, side, 1)
-            sendSPI(addr, side, 0xFF)
-                
+    test == 0
+    if test == 1:
+        for addr in [0x40, 0x42, 0x44]:
+            for side in [O_GPIOA, O_GPIOB]:
+                walkinglight(addr, side, 1)
+                sendSPI(addr, side, 0xFF)
+    if test == 2:
+        while 1:
+            Scan.feel()
 
+def game(A, B):
+            switchbankone = mklist(A)
+            switchbanktwo = mklist(B)
+            
+            if switchbankone[0] == 1:#toprollover 1
+                punten(500)
+                if Dict30ydswlit['1']: 
+                   addyards(30)
 
+            if switchbankone[1] == 1:#toprollover 2
+                punten(500)
+                if Dict30ydswlit['2']:
+                    addyards(30)
 
+            if switchbankone[2] == 1:#toprollover 3
+                punten(500)
+                if Dict30ydswlit['3']:
+                    addyards(30)
 
+            if switchbankone[3] == 1:#toprollover 4
+                punten(500)
+                if Dict30ydswlit['3']: 
+                    addyards(30)
 
-    
-#    while 1:
-#        Scan.feel()
+            if switchbankone[4] == 1:#ster
+                punten(100)
+                changeyardsdirection()
+                addbonus(1000)
+
+            if switchbankone[5] == 1:#popbumper
+                punten(50)
+                yard(1)
+                randomtoplights()
+
+            if switchbankone[6] == 1:#targets
+                punten(1000)
+                addbonus(1000)
+                addyards(5)
+
+            if switchbankone[7] == 1:#spinner
+                punten(10) 
+                addyards(1)
+
+            if switchbanktwo[0] == 1:#outlane
+                print("outlane")
+                punten(1000)
+                addyards(10)
+
+            if switchbanktwo[1] == 1:#achterbank
+                addbonus(1000)
+                punten(500)
+                addyards(1)
+
+            if switchbanktwo[2] == 1:#bank drop down targers 
+                targetshit = targetshit + 1
+                punten(300)
+
+            if switchbanktwo[3] == 1:#outhole
+                outhole() 
+        
+
 ######################################
 #Speelfuncties
 ######################################
@@ -250,13 +309,19 @@ def addbonus(amount):   #Voegt bonuspunten toe
 
 def lasttargetdown():   #Kijkt welke lampje langs de droptarget aan is
     print("lasttarget down")
-
+    if targetshit == 7:
+        if DictLTDscores['5000'] == 0:
+            print("5000 scored")        
+        elif DictLTDscores['goal'] == 0:
+            print("goal scored")
+        elif DictLTDscores['special'] == 0:   
+            print("special scored")
 def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuurd worden
     global DictSingleyards
     global DictDecayards
     global yardsvalue
     global decayardsvalue
-    if yardsdirection: 
+    if DictPijltjes['right'] == 0: 
         yardsvalue +=  amount
     else:
         yardsvalue -=  amount
@@ -283,18 +348,33 @@ def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuur
     DictSingleyards[IndexSingleyards[yardsvalue - 1]] = 0   #Sets appropriate value (depending on yardvalue) to 0 -> this lite will be on
     DictDecayards[IndexDecayards[decayardsvalue]] = 0       #Sets appropriate value (depending on decayardvalue) to 0 -> this lite will be on
 
-
-def toplights():        #Kijkt als het lampje boven het contact aan is
-    print("toplights")
-
-def outhole():          #Zorgt voor de spelercount, ejectball en countbonus
+def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
     print("outhole")
 
-def ejectball():        #Trekt de relais kortstondig aan nadat de bal kwijt wordt gespeeld
+def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt wordt gespeeld
     print("ejectball")
 
-def countbonus():       #Telt de bonus punten op nadat de bal kwijt wordt gespeeld, zorgt ook voor doublebonus
+def countbonus():           #Telt de bonus punten op nadat de bal kwijt wordt gespeeld, zorgt ook voor doublebonus
     print("countbonus")
+
+def changeyardsdirection(): #Verandert richting van pijltjes
+    print("changeyardsdirection")
+    global DictPijltjes
+
+    DictPijltjes['left'] = togglevar(DictPijltjes['left'])
+    DictPijltjes['right'] = togglevar(DictPijltjes['right'])
+
+def punten(amount):     #Voorziet punten (WIP)
+    print("punten")
+    global punten
+    punten += amount
+
+def randomtoplights():
+    global Dict30yardswlit 
+    Dict30yardswlit['1'] = random.randint(0, 1)
+    Dict30yardswlit['2'] = random.randint(0, 1)
+    Dict30yardswlit['3'] = random.randint(0, 1)
+    Dict30yardswlit['4'] = random.randint(0, 1)
 
 #####################################
 #Algemene Functies
@@ -315,7 +395,8 @@ def mklst(x):           #Maakt van een hexadecimaal getal een binaire lijst
     return [1 if (1<<j)&x else 0 for j in range(7,-1,-1)]
 
 def mkhex(lijst):       #Maakt van bovenstaande lijst terug een getal
-    return int(''.join(map(str, lijst)), 2) 
+    return int(''.join(map(str, lijst)), 2)
+
 def togglevar(var):
     if var == 1:
         var = 0
@@ -357,10 +438,7 @@ def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and s
     
     
 if __name__ == '__main__':
-        
-#            Scan=Feeler(30,Menu)
-
-            main()
-                
-            reset_regs()
+        Scan=Feeler(30,game)    #Detects a change in inputs, if it's set to a certain state for longer than "30" counts it executes "game"
+        main()                  #Main loop
+        reset_regs()            #Resets all register after main has ended (probably won't ever be used in a real life situation
  
