@@ -8,42 +8,18 @@ GPIO.setmode(GPIO.BCM)
 
 GPIO.setwarnings(False)
 
-
-
-SPI_SLAVE_ADDR  =       0x40
-
-SPI_IOCTRL                      =       0x0A
-
-
-
-SPI_IODIRA                      =       0x00
-
-SPI_IODIRB                      =       0x10
-
-
-
-SPI_GPIOA                               =       0x12
-
-SPI_GPIOB                               =       0x13
-
-
-
-SPI_SLAVE_WRITE =       0x00
-
-SPI_SLAVE_READ  =       0x01
-
-
-
-SCLK                            =       11
-
-MOSI                            =       10
-
-MISO                            =       9
-
-CS                              =       8
-
-
-
+SPI_SLAVE_ADDR = 0x40
+SPI_IOCTRL = 0x0A
+SPI_IODIRA = 0x00
+SPI_IODIRB = 0x10
+SPI_GPIOA = 0x12
+SPI_GPIOB = 0x13
+SPI_SLAVE_WRITE = 0x00
+SPI_SLAVE_READ = 0x01
+SCLK = 11
+MOSI = 10
+MISO = 9
+CS = 8
 
 I_IODIRA   = 0x00 
 I_IODIRB   = 0x10 
@@ -90,9 +66,7 @@ O_INTCAPB  = 0x11
 O_GPIOA    = 0x12 
 O_GPIOB    = 0x13 
 O_OLATA    = 0x14 
-O_OLATB    = 0x15  
-
-
+O_OLATB    = 0x15
 
 def sendValue(value):
     for     i       in range(8):
