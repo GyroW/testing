@@ -209,16 +209,15 @@ DoubleBonus = 1
 Kicker = 1
 yardsvalue = 0
 decayardsvalue = 0
+bonus = 0
 #Yardsdirection is deprecated as it is now handled with DictPijltjes
 
-#setup inputs
 
-#setup pull-up resistors
     
 def main():             #Hoofdprogramma
     setup()
     setlites()    
-    test == 0
+    test == 2
     if test == 1:
         for addr in [0x40, 0x42, 0x44]:
             for side in [O_GPIOA, O_GPIOB]:
@@ -228,7 +227,7 @@ def main():             #Hoofdprogramma
         while 1:
             Scan.feel()
 
-def game(A, B):
+def game(A, B):         #Handles switches
             switchbankone = mklist(A)
             switchbanktwo = mklist(B)
             
@@ -282,7 +281,7 @@ def game(A, B):
                 addyards(1)
 
             if switchbanktwo[2] == 1:#bank drop down targers 
-                targetshit = targetshit + 1
+                targetshit += 1
                 punten(300)
 
             if switchbanktwo[3] == 1:#outhole
@@ -290,32 +289,47 @@ def game(A, B):
         
 
 ######################################
-#Speelfuncties
+#Speelfuncties Basically, sets up variables according to what you've done.
 ######################################
 def special():          #Zal een special geven
     print("special")
 
 def extraball():        #Zal voorkomen dat de spelercount omhoog gaat en dat het "shoot again" lampje aangaat
     print("extra ball")
+    ShootAgain = 0
 
 def goal():             #Kijkt welke lampje boven de goal aan is
     print("goal")
+    if DictGoalscores['5000'] == 0:
+            print("5000 scored")        
+            punten(5000)
+    elif DictGoalscores['goal'] == 0:
+            print("goal scored")
+            goal()
+    elif DictGoalscores['special'] == 0:   
+            print("special scored")
+            special()
 
 def doublebonus():      #Zorgt ervoor dat de bonus zal verdubbelt worden
     print("doublebonus")
+    global DoubleBonus
+    DoubleBonus = 0 
 
 def addbonus(amount):   #Voegt bonuspunten toe
     print("bonus")
+    global bonus
+    bonus += amount
+
 
 def lasttargetdown():   #Kijkt welke lampje langs de droptarget aan is
     print("lasttarget down")
+    global targetshit
     if targetshit == 7:
-        if DictLTDscores['5000'] == 0:
-            print("5000 scored")        
-        elif DictLTDscores['goal'] == 0:
-            print("goal scored")
-        elif DictLTDscores['special'] == 0:   
-            print("special scored")
+        if DictLTDscores['goal'] == 0:
+            goal()
+        elif DictLTDscores['special']:
+            special()
+    targetshit = 0
 def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuurd worden
     global DictSingleyards
     global DictDecayards
@@ -350,12 +364,21 @@ def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuur
 
 def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
     print("outhole")
+    countbonus()
+    time.sleep(2)
 
 def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt wordt gespeeld
     print("ejectball")
+    global Kicker
+    Kicker = 0
+    setlites()
+    Kicker = 1
 
 def countbonus():           #Telt de bonus punten op nadat de bal kwijt wordt gespeeld, zorgt ook voor doublebonus
     print("countbonus")
+    if DoubleBonus == 0:
+        bonus *= 2
+    punten += bonus
 
 def changeyardsdirection(): #Verandert richting van pijltjes
     print("changeyardsdirection")
@@ -364,12 +387,12 @@ def changeyardsdirection(): #Verandert richting van pijltjes
     DictPijltjes['left'] = togglevar(DictPijltjes['left'])
     DictPijltjes['right'] = togglevar(DictPijltjes['right'])
 
-def punten(amount):     #Voorziet punten (WIP)
+def punten(amount):         #Voorziet punten (WIP)
     print("punten")
     global punten
     punten += amount
 
-def randomtoplights():
+def randomtoplights():      #Maakt de lampjes willekeurig
     global Dict30yardswlit 
     Dict30yardswlit['1'] = random.randint(0, 1)
     Dict30yardswlit['2'] = random.randint(0, 1)
