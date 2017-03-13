@@ -148,7 +148,7 @@ class Feeler:                                                   #Debouncing util
 
     def feel(m):
         a=readSPI(0x46, O_GPIOA)
-        b=readSPI(0x46, O_GPIOB)&0xF0
+        b=readSPI(0x46, O_GPIOB)
         if a or b:
             if m.teller>0:
                 m.teller-=1
@@ -245,31 +245,38 @@ def game(A, B):         #Handles switches
 	    global targetshit
             global DictLTDscores
 	    global DictGoalscores
-	    switchbankone = mklst(A)
-            switchbanktwo = mklst(B)
-            
+	    switchbankone = mklst(B)
+            switchbanktwo = mklst(A)
+	    print(switchbankone)
+	    print(switchbanktwo)
+            print(Dict30yardswlit)            
             if switchbankone[0] == 1:#toprollover 1
-                punten(500)
-                if Dict30yardswlit['1']: 
+                print("top rollover 1")
+	        punten(500)
+                if Dict30yardswlit['1'] == 0: 
                    addyards(30)
 
             if switchbankone[1] == 1:#toprollover 2
+                print("top rollover 2")
                 punten(500)
-                if Dict30yardswlit['2']:
+                if Dict30yardswlit['2'] == 0:
                     addyards(30)
 
             if switchbankone[2] == 1:#toprollover 3
+                print("top rollover 3")
                 punten(500)
-                if Dict30yardswlit['3']:
+                if Dict30yardswlit['3'] == 0:
                     addyards(30)
 
             if switchbankone[3] == 1:#toprollover 4
+                print("top rollover 4")
                 punten(500)
-                if Dict30yardswlit['3']: 
+                if Dict30yardswlit['4'] == 0: 
                     addyards(30)
 
             if switchbankone[4] == 1:#ster
-                punten(100)
+                print("ster")
+		punten(100)
                 changeyardsdirection()
 		if bonus == 10000:
 		    if DictGoalscores['5000'] == 0 and DictGoalscores['extra ball'] == 1 and DictGoalscores['special'] == 1:
@@ -279,20 +286,23 @@ def game(A, B):         #Handles switches
 		addbonus(1000)
 
             if switchbankone[5] == 1:#popbumper
-                punten(50)
+                print("popbumper")
+		punten(50)
                 addyards(1)
                 randomtoplights()
 
             if switchbankone[6] == 1:#targets
-                punten(1000)
+                print("targets")
+		punten(1000)
                 addbonus(1000)
                 addyards(5)
 		if DictGoalscores['5000'] == 1 and DictGoalscores['extra ball'] == 0 and DictGoalscores['special'] == 1:
 		    DictGoalscores['extra ball'] = 1
 		    DictGoalscores['special'] = 0
 
-            if switchbankone[7] == 1:#spinner
-                punten(10) 
+            if switchbanktwo[7] == 1:#spinner
+                print("spinner")
+		punten(10) 
                 addyards(1)
 
             if switchbanktwo[0] == 1:#outlane
@@ -301,12 +311,14 @@ def game(A, B):         #Handles switches
                 addyards(10)
 
             if switchbanktwo[1] == 1:#achterbank
-                addbonus(1000)
+                print("targets archetr bank")
+		addbonus(1000)
                 punten(500)
                 addyards(1)
 
             if switchbanktwo[2] == 1:#bank drop down targers 
-                targetshit += 1
+                print("droptarget")
+		targetshit += 1
                 punten(300)
 
             if switchbanktwo[3] == 1:#outhole
@@ -514,7 +526,7 @@ def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and s
     
     
 if __name__ == '__main__':
-        Scan=Feeler(30,game)    #Detects a change in inputs, if it's set to a certain state for longer than "30" counts it executes "game"
+        Scan=Feeler(10,game)    #Detects a change in inputs, if it's set to a certain state for longer than "30" counts it executes "game"
         main()                  #Main loop
         reset_regs()            #Resets all register after main has ended (probably won't ever be used in a real life situation
  
