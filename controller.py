@@ -237,6 +237,9 @@ def main():             #Hoofdprogramma
             setlites()
 	    if bonus == 20000:
 		bonus = 0
+    if test == 4:
+	reset_regs()
+
 
 def game(A, B):         #Handles switches
 	    global targetshit
