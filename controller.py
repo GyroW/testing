@@ -188,7 +188,7 @@ PP2 = 0
 PP3 = 0
 PP4 = 0
 
-ShootAgain = 1
+Shootagain = 1
 DoubleBonus = 1
 Kicker = 1
 yardsvalue = 0
@@ -267,7 +267,8 @@ def game(A, B):         #Handles switches
                 punten(500)
                 if Dict30yardswlit['3'] == 0:
                     addyards(30)
-                    if bonus == 10000:
+                    print(bonus)
+		    if bonus == 10000:
 		        if DictLTDscores['goal'] == 0:
 			    DictLTDscores['goal'] = 1
 			    DictLTDscores['special'] = 0
@@ -313,7 +314,7 @@ def game(A, B):         #Handles switches
 		    DictGoalscores['special'] = 0
 
             
-            if switchbanktwo[7] == 1:#spinner
+            if switchbanktwo[5] == 1:#spinner
                 print("spinner")
 		punten(10) 
                 addyards(1)
@@ -343,7 +344,7 @@ def game(A, B):         #Handles switches
 	    
             
             setlites()        
-
+	    lasttargetdown() #check if 7 targets have been hit
 
 ######################################
 #Speelfuncties Basically, sets up variables according to what you've done.
@@ -352,17 +353,18 @@ def special():          #Zal een special geven
     print("special")
 
 def extraball():        #Zal voorkomen dat de spelercount omhoog gaat en dat het "shoot again" lampje aangaat
+    global Shootagain
     print("extra ball")
-    ShootAgain = 0
+    Shootagain = 0
 
 def goal():             #Kijkt welke lampje boven de goal aan is
     print("goal")
     if DictGoalscores['5000'] == 0:
             print("5000 scored")        
             punten(5000)
-    elif DictGoalscores['goal'] == 0:
+    elif DictGoalscores['extra ball'] == 0:
             print("goal scored")
-            goal()
+            extraball()
     elif DictGoalscores['special'] == 0:   
             print("special scored")
             special()
@@ -378,21 +380,20 @@ def addbonus(amount):   #Voegt bonuspunten toe
     print("bonus")
     for i in DictBonus:               #Resets dictionary to default state (all 1s)
         DictBonus[i] = 1            #It's set to 1 because lights will turn on when given ground, and off when given 3.3V
-    if bonus > 10000:
-	bonus = 10000
+    if bonus < 10000:
+        bonus += amount 
     DictBonus[IndexBonus[(bonus/1000)-1]] = 0
     print(bonus)
-    bonus += amount 
 
 def lasttargetdown():   #Kijkt welke lampje langs de droptarget aan is
-    print("lasttarget down")
     global targetshit
     if targetshit == 7:
+        print("lasttarget down")
         if DictLTDscores['goal'] == 0:
             goal()
         elif DictLTDscores['special']:
             special()
-    targetshit = 0
+        targetshit = 0
 
 def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuurd worden
     global DictSingleyards
@@ -429,6 +430,7 @@ def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
     global DictPijltjes
     global DictGoalscores
     global DictLTDscores
+    global Shootagain
     print("outhole")
     countbonus()
     time.sleep(2)
@@ -454,14 +456,25 @@ def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
             ballingame += 1     #If we exceed maximum amount of players, go to next ball
         if ballingame > maxballs: #If we exceed maximum amount of balls, gameover
             gameover()
+    Shootagain = 1
 
 def gameover():
     global Gameover
     global ballingame
     global maxplayers
+    global PP1
+    global PP2
+    global PP3
+    global PP4
     Gameover = True
     ballingame = 1
     maxplayers = 0
+    PP1 = 0
+    PP2 = 0
+    PP3 = 0
+    PP4 = 0
+
+
 
 def startknop():
     global maxplayers
@@ -478,7 +491,7 @@ def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt 
     global Kicker
     Kicker = 0
     setlites()
-    time.sleep(2)
+    time.sleep(0.05)
     Kicker = 1
     setlites()
 
@@ -503,13 +516,15 @@ def punten(amount):         #Voorziet punten (WIP)
     global PP3
     global PP4
     if playeringame == 1:
-        PP1 =+ amount
+        PP1 += amount
     if playeringame == 2:
-        PP2 =+ amount
+        PP2 += amount
     if playeringame == 3:
-        PP3 =+ amount
+        PP3 += amount
     if playeringame == 4:
-        PP4 =+ amount
+        PP4 += amount
+    print("Ball in game:", ballingame)
+    print("Player in game:", playeringame)
     print("Punten Speler 1:", PP1)
     print("Punten Speler 2:", PP2)
     print("Punten Speler 3:", PP3)
@@ -560,7 +575,7 @@ def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and s
     list0x40B = [DictSingleyards['yard9'], DictSingleyards['yard10'], DictDecayards['yardsleft'],  DictDecayards['yards10'], DictDecayards['yards20'], DictDecayards['yards30'], DictDecayards['yards40'], DictDecayards['yards50']]
     list0x42A = [DictDecayards['yards-40'], DictDecayards['yards-30'], DictDecayards['yards-20'], DictDecayards['yards-10'], DictDecayards['yardsright'], DictPijltjes['right'], DictPijltjes['left'], DictGoalscores['5000']]
     list0x42B = [DictGoalscores['extra ball'], DictGoalscores['special'], DictLTDscores['goal'], DictLTDscores['special'], DictBonus['4000'], DictBonus['5000'], DictBonus['6000'], DictBonus['7000']] 
-    list0x44A = [DictBonus['1000'], DictBonus['2000'], DictBonus['3000'], Dict30yardswlit['1'], Dict30yardswlit['3'], ShootAgain, 1, 1]
+    list0x44A = [DictBonus['1000'], DictBonus['2000'], DictBonus['3000'], Dict30yardswlit['1'], Dict30yardswlit['3'], Shootagain, 1, 1]
     list0x44B = [DictBonus['9000'], DictBonus['10000'], DoubleBonus, DictBonus['8000'], Dict30yardswlit['2'], Dict30yardswlit['4'], Kicker, 1]
      
     hex0x40A = mkhex(list0x40A)
