@@ -113,7 +113,7 @@ def reset_regs():
         for regaddress in [O_IPOLA, O_IPOLB, O_GPINTENA, O_GPINTENB, O_DEFVALA, O_DEFVALB, O_INTCONA, O_INTCONB, O_GPPUA, O_GPPUB, O_INTFA, O_INTFB, O_INTCAPA, O_INTCAPB, O_GPIOA, O_GPIOB, O_OLATA, O_OLATB]:
             sendSPI(device_address,regaddress,0)
 
-class Feeler:                                                   #Debouncing utility, starts a new instance every time we start counting again so we don't overlap
+class Feeler:        #Debouncing utility, starts a new instance every time we start counting again so we don't overlap
     def __init__(m,maxv,func):
             m.maxval=maxv
             m.teller=maxv
@@ -156,7 +156,7 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     #Inverse Polarity of Input 
     sendSPI(0x46, O_IPOLA, 0xFF)
     sendSPI(0x46, O_IPOLB, 0xFF)
-    #Starting Ligts
+    #Starting Lights
     DictPijltjes['right'] = 0
     DictLTDscores['goal'] = 0
     DictGoalscores['5000'] = 0
@@ -175,8 +175,6 @@ Dict30yardswlit = {'1': 1, '2': 1, '3': 1, '4': 1}
 IndexSingleyards = ['yard1', 'yard2', 'yard3', 'yard4', 'yard5', 'yard6', 'yard7', 'yard8', 'yard9', 'yard10']
 IndexDecayards = ['yardsleft', 'yards10', 'yards20', 'yards30', 'yards40', 'yards50', 'yards-40', 'yards-30', 'yards-20', 'yards-10', 'yardsright']
 IndexBonus = ['1000', '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000', '10000']
-
-#starting lights
 
 #starting variables
 ballingame = 1
@@ -472,10 +470,8 @@ def startknop():
     if maxplayers == 0:
         Gameover = False
         playeringame = 1
-    if ballingame == 1:
+    if ballingame == 1 and maxplayers < 4:
         maxplayers += 1
-    if maxplayers > 4:
-        maxplayers = 4
 
 def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt wordt gespeeld
     print("ejectball")
