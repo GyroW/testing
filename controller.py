@@ -160,7 +160,7 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     DictPijltjes['right'] = 0
     DictLTDscores['goal'] = 0
     DictGoalscores['5000'] = 0
-
+    ejectball()
 
 #starting dictionaries
 DictSingleyards = {'yard1': 1, 'yard2': 1, 'yard3': 1, 'yard4': 1, 'yard5': 1, 'yard6': 1, 'yard7': 1, 'yard8': 1, 'yard9' :1, 'yard10': 1} #1 -10
@@ -179,6 +179,17 @@ IndexBonus = ['1000', '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9
 #starting lights
 
 #starting variables
+ballingame = 1
+maxballs = 5
+maxplayers = 0
+playeringame = 0
+Gameover = True
+
+PP1 = 0
+PP2 = 0
+PP3 = 0
+PP4 = 0
+
 ShootAgain = 1
 DoubleBonus = 1
 Kicker = 1
@@ -195,59 +206,86 @@ def main():             #Hoofdprogramma
     setup()
     setlites()
     global bonus    
-    test = 2
-    if test == 1:
+    runtime = 2
+    if runtime == 1:
         for addr in [0x40, 0x42, 0x44]:
             for side in [O_GPIOA, O_GPIOB]:
                 walkinglight(addr, side, 1)
                 sendSPI(addr, side, 0xFF)
-    if test == 2:
+    if runtime == 2:
         while 1:
             Scan.feel()
-    if test == 3:
+    if runtime == 3:
 	while 1:
 	    time.sleep(2)
 	    addbonus(1000)
             setlites()
 	    if bonus == 20000:
 		bonus = 0
-    if test == 4:
+    if runtime == 4:
 	reset_regs()
 
 
 def game(A, B):         #Handles switches
-	    global targetshit
-            global DictLTDscores
-	    global DictGoalscores
-	    switchbankone = mklst(B)
-            switchbanktwo = mklst(A)
-	    print(switchbankone)
-	    print(switchbanktwo)
-            print(Dict30yardswlit)            
+	global targetshit
+        global DictLTDscores
+	global DictGoalscores
+	switchbankone = mklst(B)
+        switchbanktwo = mklst(A)
+	print(switchbankone)
+	print(switchbanktwo)
+        print(Dict30yardswlit)            
+    
+        if switchbanktwo[4] == 1:
+            startknop()
+            
+        if Gameover == False:       #Only work if not in gameover mode
+
+            
             if switchbankone[0] == 1:#toprollover 1
                 print("top rollover 1")
 	        punten(500)
                 if Dict30yardswlit['1'] == 0: 
                    addyards(30)
+                   if bonus == 10000:
+		        if DictLTDscores['goal'] == 0:
+			    DictLTDscores['goal'] = 1
+			    DictLTDscores['special'] = 0
+
 
             if switchbankone[1] == 1:#toprollover 2
                 print("top rollover 2")
                 punten(500)
                 if Dict30yardswlit['2'] == 0:
                     addyards(30)
+                    if bonus == 10000:
+		        if DictLTDscores['goal'] == 0:
+			    DictLTDscores['goal'] = 1
+			    DictLTDscores['special'] = 0
 
+            
             if switchbankone[2] == 1:#toprollover 3
                 print("top rollover 3")
                 punten(500)
                 if Dict30yardswlit['3'] == 0:
                     addyards(30)
+                    if bonus == 10000:
+		        if DictLTDscores['goal'] == 0:
+			    DictLTDscores['goal'] = 1
+			    DictLTDscores['special'] = 0
 
+            
             if switchbankone[3] == 1:#toprollover 4
                 print("top rollover 4")
                 punten(500)
                 if Dict30yardswlit['4'] == 0: 
                     addyards(30)
+                    if bonus == 10000:
+		        if DictLTDscores['goal'] == 0:
+			    DictLTDscores['goal'] = 1
+			    DictLTDscores['special'] = 0
 
+            
             if switchbankone[4] == 1:#ster
                 print("ster")
 		punten(100)
@@ -259,12 +297,14 @@ def game(A, B):         #Handles switches
 		print(DictGoalscores)		
 		addbonus(1000)
 
+            
             if switchbankone[5] == 1:#popbumper
                 print("popbumper")
 		punten(50)
                 addyards(1)
                 randomtoplights()
 
+            
             if switchbankone[6] == 1:#targets
                 print("targets")
 		punten(1000)
@@ -274,30 +314,38 @@ def game(A, B):         #Handles switches
 		    DictGoalscores['extra ball'] = 1
 		    DictGoalscores['special'] = 0
 
+            
             if switchbanktwo[7] == 1:#spinner
                 print("spinner")
 		punten(10) 
                 addyards(1)
 
+            
             if switchbanktwo[0] == 1:#outlane
                 print("outlane")
                 punten(1000)
                 addyards(10)
 
+            
             if switchbanktwo[1] == 1:#achterbank
                 print("targets archetr bank")
 		addbonus(1000)
                 punten(500)
                 addyards(1)
 
+            
             if switchbanktwo[2] == 1:#bank drop down targers 
                 print("droptarget")
 		targetshit += 1
                 punten(300)
 
+            
             if switchbanktwo[3] == 1:#outhole
                 outhole() 
-	    setlites()        
+	    
+            
+            setlites()        
+
 
 ######################################
 #Speelfuncties Basically, sets up variables according to what you've done.
@@ -370,9 +418,6 @@ def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuur
         goal()
         decayardsvalue = 0
         yardsvalue = 0
-    #######################
-    #Lights
-    #######################
     for i in DictSingleyards:               #Resets dictionary to default state (all 1s)
         DictSingleyards[i] = 1            #It's set to 1 because lights will turn on when given ground, and off when given 3.3V
     for i in DictDecayards:
@@ -400,6 +445,37 @@ def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
     DictLTDscores['special'] = 1
     for i in DictBonus:
         DictBonus[i] = 1
+    #Spelercount
+    global ballingame
+    global playeringame
+    if Gameover == False:    
+        if Shootagain == 1:     #If false
+            playeringame += 1   #Add to playeringame
+        if playeringame > maxplayers:
+            playeringame = 1
+            ballingame += 1     #If we exceed maximum amount of players, go to next ball
+        if ballingame > maxballs: #If we exceed maximum amount of balls, gameover
+            gameover()
+
+def gameover():
+    global Gameover
+    global ballingame
+    global maxplayers
+    Gameover = True
+    ballingame = 1
+    maxplayers = 0
+
+def startknop():
+    global maxplayers
+    global Gameover
+    global playeringame
+    if maxplayers == 0:
+        Gameover = False
+        playeringame = 1
+    if ballingame == 1:
+        maxplayers += 1
+    if maxplayers > 4:
+        maxplayers = 4
 
 def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt wordt gespeeld
     print("ejectball")
@@ -426,9 +502,22 @@ def changeyardsdirection(): #Verandert richting van pijltjes
     DictPijltjes['right'] = togglevar(DictPijltjes['right'])
 
 def punten(amount):         #Voorziet punten (WIP)
-    print("punten")
-    global points
-    points += amount
+    global PP1
+    global PP2
+    global PP3
+    global PP4
+    if playeringame == 1:
+        PP1 =+ amount
+    if playeringame == 2:
+        PP2 =+ amount
+    if playeringame == 3:
+        PP3 =+ amount
+    if playeringame == 4:
+        PP4 =+ amount
+    print("Punten Speler 1:", PP1)
+    print("Punten Speler 2:", PP2)
+    print("Punten Speler 3:", PP3)
+    print("Punten Speler 4:", PP4)
 
 def randomtoplights():      #Maakt de lampjes willekeurig
     global Dict30yardswlit 
