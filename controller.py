@@ -240,7 +240,7 @@ def game(A, B):         #Handles switches
         if Gameover == False:       #Only work if not in gameover mode
 
             
-            if switchbankone[0] == 1:#toprollover 1
+            if switchbanktwo[7] == 1:#toprollover 1
                 print("top rollover 1")
 	        punten(500)
                 if Dict30yardswlit['1'] == 0: 
