@@ -1,7 +1,7 @@
 import time, sys,       signal, os
 import random
 import RPi.GPIO as GPIO
-
+from tkinter import * 
 
 
 GPIO.setmode(GPIO.BCM)
@@ -147,6 +147,7 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     GPIO.output(CS, GPIO.HIGH)
     GPIO.output(SCLK, GPIO.LOW)
     reset_regs()
+    visual()
     #Set as Input
     sendSPI(0x46, O_IODIRA, 0xFF)
     sendSPI(0x46, O_IODIRB, 0xFF)
@@ -198,6 +199,78 @@ points = 0
 targetshit = 0
 #Yardsdirection is deprecated as it is now handled with DictPijltjes
 
+#Visualvariables
+xpadding = 600
+ypadding = 300
+fontsize = 70
+textcolour      ='#00468B'
+textfont        ='Helvetica'
+activecolour    ='#FFDE00'
+inactivecolour  ='#149CD8'
+
+
+
+def visual():           #Visual Initialization
+    bgimage = PhotoImage(file = 'background.gif')                               #Sets background image
+    x = Label(image=bgimage) 
+    x.place(x=0, y=0, relwidth=1, relheight=1)
+
+    Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))  #Creërt label met correcte tekst, kleur, font en grootte
+    Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
+    Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
+    Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
+
+    Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
+    Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
+    Speler3.grid(row=2,column=0, sticky=E, )
+    Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
+
+def updatevisual():
+
+    #Maakt de VPP1-4 labels
+    if playeringame == 1:
+        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 2:
+        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 3:
+        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 4:
+        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
+    
+    VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Makes sure VPP1-4 exists
+    VPP2.grid(row=1,column=2, pady=(0,ypadding))
+    VPP3.grid(row=3,column=0)
+    VPP4.grid(row=3,column=2)
+    gui.update_idletasks()
+    gui.update()
+    
+    VPP1.destroy()                                                              #Deletes VPP1-4
+    VPP2.destroy()
+    VPP3.destroy()
+    VPP4.destroy()
+    gui.update_idletasks()
+    gui.update()
+    
+    VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Replaces VPP1-4
+    VPP2.grid(row=1,column=2, pady=(0,ypadding))
+    VPP3.grid(row=3,column=0)
+    VPP4.grid(row=3,column=2)
+    gui.update_idletasks()
+    gui.update()
+    
+    
+    
+    
+    
+    
 
     
 def main():             #Hoofdprogramma
@@ -343,15 +416,15 @@ def game(A, B):         #Handles switches
                 outhole() 
 	    
             
-            setlites()        
+            setlites()
+            updatevisual()
 	    lasttargetdown() #check if 7 targets have been hit
 
 ######################################
 #Speelfuncties Basically, sets up variables according to what you've done.
 ######################################
 def special():          #Zal een special geven
-    if ballingame == 5:
-        doublebonus()
+    doublebonus()
     extraball()
     punten(10000)
     addbonus(3000)
