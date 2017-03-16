@@ -350,6 +350,11 @@ def game(A, B):         #Handles switches
 #Speelfuncties Basically, sets up variables according to what you've done.
 ######################################
 def special():          #Zal een special geven
+    if ballingame == 5:
+        doublebonus()
+    extraball()
+    punten(10000)
+    addbonus(3000)
     print("special")
 
 def extraball():        #Zal voorkomen dat de spelercount omhoog gaat en dat het "shoot again" lampje aangaat
@@ -456,7 +461,10 @@ def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
             ballingame += 1     #If we exceed maximum amount of players, go to next ball
         if ballingame > maxballs: #If we exceed maximum amount of balls, gameover
             gameover()
+    if ballingame == 5:
+        doublebonus()
     Shootagain = 1
+    setlites()
 
 def gameover():
     global Gameover
