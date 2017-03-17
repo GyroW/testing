@@ -260,7 +260,7 @@ def updatevisual():
     VPP2.grid(row=1,column=2, pady=(0,ypadding))
     VPP3.grid(row=3,column=0)
     VPP4.grid(row=3,column=2)
-    raw_input("Waiting for the weird visual thing:")
+   # raw_input("Waiting for the weird visual thing:")
    
 
 
