@@ -280,6 +280,7 @@ def main():             #Hoofdprogramma
     if runtime == 2:
         while 1:
             Scan.feel()
+            updatevisual()
     if runtime == 3:
 	while 1:
 	    time.sleep(2)
