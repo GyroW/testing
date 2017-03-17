@@ -183,7 +183,7 @@ maxballs = 5
 maxplayers = 0
 playeringame = 0
 Gameover = True
-
+gui = Tk()
 QPP1 = StringVar() 
 QPP2 = StringVar() 
 QPP3 = StringVar() 
