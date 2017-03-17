@@ -298,7 +298,7 @@ def main():             #Hoofdprogramma
 #    startknop()
     updatevisual()
     global bonus    
-    runtime = 2
+    runtime = 3
     if runtime == 1:
         for addr in [0x40, 0x42, 0x44]:
             for side in [O_GPIOA, O_GPIOB]:
@@ -311,6 +311,7 @@ def main():             #Hoofdprogramma
 	while 1:
 	    time.sleep(2)
 	    addbonus(1000)
+            addyards(1)
             setlites()
 	    if bonus == 20000:
 		bonus = 0
@@ -572,6 +573,7 @@ def gameover():
     ballingame = 1
     maxplayers = 0
 #    resetvisual()
+    time.sleep(5)
     PP1 = 0
     PP2 = 0
     PP3 = 0
