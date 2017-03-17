@@ -210,6 +210,8 @@ textcolour      ='#00468B'
 textfont        ='Helvetica'
 activecolour    ='#FFDE00'
 inactivecolour  ='#149CD8'
+
+print("thiscode will run")
 gui = Tk()         #init van scherm
 w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
 gui.overrideredirect(1)                                     #Overschrijft de taakbalk en dergelijken
@@ -228,7 +230,7 @@ Speler1.grid(row=0,column=0, sticky=E)
 Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
 Speler3.grid(row=2,column=0, sticky=E, )
 Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
-
+print("this code has ran")
 
 
 
