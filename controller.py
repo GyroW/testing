@@ -261,7 +261,8 @@ def updatevisual():
     VPP3.grid(row=3,column=0)
     VPP4.grid(row=3,column=2)
    # raw_input("Waiting for the weird visual thing:")
-   
+    gui.update_idletasks()
+    gui.update()
 
 
 
