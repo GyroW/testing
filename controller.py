@@ -188,6 +188,7 @@ QPP1 = StringVar()
 QPP2 = StringVar() 
 QPP3 = StringVar() 
 QPP4 = StringVar() 
+Qballingame = StringVar()
 PP1 = 0
 PP2 = 0
 PP3 = 0
@@ -225,11 +226,13 @@ def visual():           #Visual Initialization
     Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
     Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
     Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
+    Ballingame = Label(text='Ball in game', fg = textcolour, font=(textfont, fontsize))
 
     Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
     Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
     Speler3.grid(row=2,column=0, sticky=E, )
     Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
+    Ballingame.grid(row=0, column=1)
 
 def updatevisual():
     print("updated the visual")
@@ -237,10 +240,12 @@ def updatevisual():
     global QPP2 
     global QPP3
     global QPP4
+    global Qballingame
     QPP1.set(PP1) 
     QPP2.set(PP2)
     QPP3.set(PP3)
     QPP4.set(PP4)
+    Qballingame.set(ballingame)
     #Maakt de VPP1-4 labels
     if playeringame == 1:
         VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
@@ -258,39 +263,15 @@ def updatevisual():
         VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
     else:
         VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
-    
+    Vballingame = Label(textvariable=Qballingame, fg = inactivecolour, font=(textfont, fontsize))
     VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Makes sure VPP1-4 exists
     VPP2.grid(row=1,column=2, pady=(0,ypadding))
     VPP3.grid(row=3,column=0)
     VPP4.grid(row=3,column=2)
+    Vballingame.grid(row=1, column=1)
     gui.update_idletasks()
     gui.update()
     
-#def resetvisual():
-#    if playeringame == 1:
-#        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 2:
-#        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 3:
-#        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 4:
-#        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
-#    VPP1.destroy()
-#    VPP2.destroy()
-#    VPP3.destroy()
-#    VPP4.destroy()
-    
-    
-    
-
     
 def main():             #Hoofdprogramma
     setup()
@@ -298,7 +279,7 @@ def main():             #Hoofdprogramma
 #    startknop()
     updatevisual()
     global bonus    
-    runtime = 3
+    runtime = 2
     if runtime == 1:
         for addr in [0x40, 0x42, 0x44]:
             for side in [O_GPIOA, O_GPIOB]:
@@ -708,5 +689,4 @@ def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and s
 if __name__ == '__main__':
         Scan=Feeler(10,game)    #Detects a change in inputs, if it's set to a certain state for longer than "30" counts it executes "game"
         main()                  #Main loop
-        reset_regs()            #Resets all register after main has ended (probably won't ever be used in a real life situation
  
