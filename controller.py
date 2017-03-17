@@ -235,10 +235,10 @@ def visual():           #Visual Initialization
     Ballingame = Label(text='Ball in game', fg = textcolour, font=(textfont, fontsize/2))
 
     Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
-    Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
-    Speler3.grid(row=2,column=0, sticky=E, )
+    Speler2.grid(row=0,column=2, sticky=W)
+    Speler3.grid(row=2,column=0, sticky=E)
     Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
-    Ballingame.grid(row=0, column=1)
+    Ballingame.grid(row=0, column=1, padx=xpadding)
 
 def updatevisual():
     print("updated the visual")
