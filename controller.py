@@ -228,7 +228,7 @@ def visual():           #Visual Initialization
     Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
 
 def updatevisual():
-
+    print("updated the visual")
     #Maakt de VPP1-4 labels
     if playeringame == 1:
         VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
