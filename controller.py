@@ -263,7 +263,8 @@ def updatevisual():
 def main():             #Hoofdprogramma
     setup()
     setlites()
-    startknop()
+#    startknop()
+    updatevisual()
     global bonus    
     runtime = 2
     if runtime == 1:
