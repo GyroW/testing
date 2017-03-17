@@ -1,6 +1,6 @@
 from  Tkinter import *
 import time 
-xpadding = 600
+xpadding = 500
 ypadding = 300
 fontsize = 70
 playeringame = 1
@@ -12,9 +12,9 @@ inactivecolour  ='#149CD8'
 
 gui = Tk()
 i = StringVar() 
-#w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()
-#gui.overrideredirect(1)
-#gui.geometry("%dx%d+0+0" % (w, h))
+w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()
+gui.overrideredirect(1)
+gui.geometry("%dx%d+0+0" % (w, h))
 bgimage = PhotoImage(file = 'background.gif')
 x = Label(image=bgimage) 
 x.place(x=0, y=0, relwidth=1, relheight=1)
