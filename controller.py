@@ -215,6 +215,8 @@ inactivecolour  ='#149CD8'
 gui = Tk()
 w = gui.winfo_screenwidth() 
 h = gui.winfo_screenheight()
+print(w,h)
+
 gui.overrideredirect(1)
 gui.geometry("%dx%d+0+0" % (w, h))
 
