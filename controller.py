@@ -213,7 +213,7 @@ textfont        ='Helvetica'
 activecolour    ='#FFDE00'
 inactivecolour  ='#149CD8'
 gui = Tk()
-gui.attributes("-fullscreen",True)
+#gui.attributes("-fullscreen",True)
 #w = gui.winfo_screenwidth() 
 #h = gui.winfo_screenheight()
 #print(w,h)
