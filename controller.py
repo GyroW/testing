@@ -255,6 +255,22 @@ def updatevisual():
     gui.update()
     
 def resetvisual():
+    if playeringame == 1:
+        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 2:
+        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 3:
+        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 4:
+        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
     VPP1.destroy()
     VPP2.destroy()
     VPP3.destroy()
@@ -552,6 +568,7 @@ def gameover():
 
 
 def startknop():
+    print("startknop")
     global maxplayers
     global Gameover
     global playeringame
