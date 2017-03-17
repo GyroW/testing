@@ -206,10 +206,10 @@ textfont        ='Helvetica'
 activecolour    ='#FFDE00'
 inactivecolour  ='#149CD8'
 
-gui = Tk()         #init van scherm
-w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
-gui.overrideredirect(1)                                     #Overschrijft de taakbalk en dergelijken
-gui.geometry("%dx%d+0+0" % (w, h))                          #Zet de schermgroote op de maat van het scherm
+gui = Tk()                                                  #init van scherm
+#w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
+#gui.overrideredirect(1)                                     #Overschrijft de taakbalk en dergelijken
+#gui.geometry("%dx%d+0+0" % (w, h))                          #Zet de schermgroote op de maat van het scherm
 bgimage = PhotoImage(file = 'background.gif')               #Zet bgimage als correcte soort variable
 achtergrondfoto = Label(image=bgimage)                      #Maakt een label aan met bovenaf vermelde foto
 achtergrondfoto.place(x=0, y=0, relwidth=1, relheight=1)    #Plaatst de achtergrond foto
