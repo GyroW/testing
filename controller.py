@@ -147,7 +147,6 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     GPIO.output(CS, GPIO.HIGH)
     GPIO.output(SCLK, GPIO.LOW)
     reset_regs()
-    #visual()
     #Set as Input
     sendSPI(0x46, O_IODIRA, 0xFF)
     sendSPI(0x46, O_IODIRB, 0xFF)
@@ -211,66 +210,32 @@ textcolour      ='#00468B'
 textfont        ='Helvetica'
 activecolour    ='#FFDE00'
 inactivecolour  ='#149CD8'
-#gui = Tk()
-#
-#
-#def visual():           #Visual Initialization
-#    print("visual has been run")
-#    
-#    bgimage = PhotoImage(file = 'background.gif')                               #Sets background image
-#    x = Label(image=bgimage) 
-#    x.place(x=0, y=0, relwidth=1, relheight=1)
-#
-#    Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))  #Creert label met correcte tekst, kleur, font en grootte
-#    Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
-#    Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
-#    Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
-#   # ballplaying = Label(text='Ball in play', fg=textcolour, font=(textfont, fontsize/2))
-#
-#    Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
-#    Speler2.grid(row=0,column=2, sticky=W, )
-#    Speler3.grid(row=2,column=0, sticky=E, )
-#    Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
-#    #ballplaying.grid(row=0, column=1, sticky=N, padx=xpadding)
-#
-#    
-#    
-#def updatevisual():
-#    print("updated the visual")
-#    global QPP1 
-#    global QPP2 
-#    global QPP3
-#    global QPP4
-#    QPP1.set(PP1) 
-#    QPP2.set(PP2)
-#    QPP3.set(PP3)
-#    QPP4.set(PP4)
-#    #Maakt de VPP1-4 labels
-#    if playeringame == 1:
-#        VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP1 = Label(textvariable=QPP1, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 2:
-#        VPP2 = Label(textvariable=QPP2, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 3:
-#        VPP3 = Label(textvariable=QPP3, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 4:
-#        VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
-#    
-#    VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Makes sure VPP1-4 exists
-#    VPP2.grid(row=1,column=2, pady=(0,ypadding))
-#    VPP3.grid(row=3,column=0)
-#    VPP4.grid(row=3,column=2)
-#    gui.update_idletasks()
-#    gui.update()
-#
-    
+gui = Tk()         #init van scherm
+w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
+gui.overrideredirect(1)                                     #Overschrijft de taakbalk en dergelijken
+gui.geometry("%dx%d+0+0" % (w, h))                          #Zet de schermgroote op de maat van het scherm
+bgimage = PhotoImage(file = 'background.gif')               #Zet bgimage als correcte soort variable
+achtergrondfoto = Label(image=bgimage)                      #Maakt een label aan met bovenaf vermelde foto
+achtergrondfoto.place(x=0, y=0, relwidth=1, relheight=1)    #Plaatst de achtergrond foto
+
+
+Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))
+Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
+Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
+Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
+
+Speler1.grid(row=0,column=0, sticky=E)
+Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
+Speler3.grid(row=2,column=0, sticky=E, )
+Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
+
+
+
+
+
+
+
+
 def main():             #Hoofdprogramma
     setup()
     setlites()
