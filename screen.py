@@ -1,4 +1,4 @@
-from  tkinter import *
+from  Tkinter import *
 import time 
 xpadding = 600
 ypadding = 300

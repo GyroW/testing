@@ -1,7 +1,7 @@
 import time, sys,       signal, os
 import random
 import RPi.GPIO as GPIO
-from tkinter import * 
+from Tkinter import * 
 
 
 GPIO.setmode(GPIO.BCM)
@@ -211,11 +211,12 @@ inactivecolour  ='#149CD8'
 
 
 def visual():           #Visual Initialization
+    gui = Tk()
     bgimage = PhotoImage(file = 'background.gif')                               #Sets background image
     x = Label(image=bgimage) 
     x.place(x=0, y=0, relwidth=1, relheight=1)
 
-    Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))  #Creërt label met correcte tekst, kleur, font en grootte
+    Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))  #Creert label met correcte tekst, kleur, font en grootte
     Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
     Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
     Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
