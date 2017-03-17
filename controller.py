@@ -184,10 +184,10 @@ maxplayers = 0
 playeringame = 0
 Gameover = True
 
-QPP1 =StringVar() 
-QPP2 =StringVar() 
-QPP3 =StringVar() 
-QPP4 =StringVar() 
+QPP1 = StringVar() 
+QPP2 = StringVar() 
+QPP3 = StringVar() 
+QPP4 = StringVar() 
 PP1 = 0
 PP2 = 0
 PP3 = 0
