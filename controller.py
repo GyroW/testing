@@ -226,7 +226,7 @@ def visual():           #Visual Initialization
     Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
     Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
     Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
-    Ballingame = Label(text='Ball in game', fg = textcolour, font=(textfont, fontsize))
+    Ballingame = Label(text='Ball in game', fg = textcolour, font=(textfont, fontsize/2))
 
     Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
     Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
