@@ -184,6 +184,10 @@ maxplayers = 0
 playeringame = 0
 Gameover = True
 
+QPP1 =StringVar() 
+QPP2 =StringVar() 
+QPP3 =StringVar() 
+QPP4 =StringVar() 
 PP1 = 0
 PP2 = 0
 PP3 = 0
@@ -229,23 +233,31 @@ def visual():           #Visual Initialization
 
 def updatevisual():
     print("updated the visual")
+    global QPP1 
+    global QPP2 
+    global QPP3
+    global QPP4
+    QPP1.set(PP1) 
+    QPP2.set(PP2)
+    QPP3.set(PP3)
+    QPP4.set(PP4)
     #Maakt de VPP1-4 labels
     if playeringame == 1:
-        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
+        VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
     else:
-        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP1 = Label(textvariable=QPP1, fg=inactivecolour,    font=(textfont, fontsize))
     if playeringame == 2:
-        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
+        VPP2 = Label(textvariable=QPP2, fg=activecolour,      font=(textfont, fontsize))
     else:
-        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,    font=(textfont, fontsize))
     if playeringame == 3:
-        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
+        VPP3 = Label(textvariable=QPP3, fg=activecolour,      font=(textfont, fontsize))
     else:
-        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,    font=(textfont, fontsize))
     if playeringame == 4:
-        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
+        VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
     else:
-        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
     
     VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Makes sure VPP1-4 exists
     VPP2.grid(row=1,column=2, pady=(0,ypadding))
@@ -254,27 +266,27 @@ def updatevisual():
     gui.update_idletasks()
     gui.update()
     
-def resetvisual():
-    if playeringame == 1:
-        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
-    else:
-        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
-    if playeringame == 2:
-        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
-    else:
-        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
-    if playeringame == 3:
-        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
-    else:
-        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
-    if playeringame == 4:
-        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
-    else:
-        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
-    VPP1.destroy()
-    VPP2.destroy()
-    VPP3.destroy()
-    VPP4.destroy()
+#def resetvisual():
+#    if playeringame == 1:
+#        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
+#    else:
+#        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
+#    if playeringame == 2:
+#        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
+#    else:
+#        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
+#    if playeringame == 3:
+#        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
+#    else:
+#        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
+#    if playeringame == 4:
+#        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
+#    else:
+#        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
+#    VPP1.destroy()
+#    VPP2.destroy()
+#    VPP3.destroy()
+#    VPP4.destroy()
     
     
     
@@ -559,7 +571,7 @@ def gameover():
     Gameover = True
     ballingame = 1
     maxplayers = 0
-    resetvisual()
+#    resetvisual()
     PP1 = 0
     PP2 = 0
     PP3 = 0
