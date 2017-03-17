@@ -254,7 +254,11 @@ def updatevisual():
     gui.update_idletasks()
     gui.update()
     
-   
+def resetvisual():
+    VPP1.destroy()
+    VPP2.destroy()
+    VPP3.destroy()
+    VPP4.destroy()
     
     
     
@@ -539,11 +543,12 @@ def gameover():
     Gameover = True
     ballingame = 1
     maxplayers = 0
+    resetvisual()
     PP1 = 0
     PP2 = 0
     PP3 = 0
     PP4 = 0
-
+    updatevisual()
 
 
 def startknop():
