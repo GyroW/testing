@@ -243,7 +243,7 @@ def updatevisual():
     QPP2.set(PP2)
     QPP3.set(PP3)
     QPP4.set(PP4)
-
+    print("visual updating")
     if playeringame == 1:
         VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
     else:
