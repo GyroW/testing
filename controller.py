@@ -254,19 +254,19 @@ def updatevisual():
     gui.update_idletasks()
     gui.update()
     
-    VPP1.destroy()                                                              #Deletes VPP1-4
-    VPP2.destroy()
-    VPP3.destroy()
-    VPP4.destroy()
-    gui.update_idletasks()
-    gui.update()
-    
-    VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Replaces VPP1-4
-    VPP2.grid(row=1,column=2, pady=(0,ypadding))
-    VPP3.grid(row=3,column=0)
-    VPP4.grid(row=3,column=2)
-    gui.update_idletasks()
-    gui.update()
+  #  VPP1.destroy()                                                              #Deletes VPP1-4
+  #  VPP2.destroy()
+  #  VPP3.destroy()
+  #  VPP4.destroy()
+  #  gui.update_idletasks()
+  #  gui.update()
+  #  
+  #  VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Replaces VPP1-4
+  #  VPP2.grid(row=1,column=2, pady=(0,ypadding))
+  #  VPP3.grid(row=3,column=0)
+  #  VPP4.grid(row=3,column=2)
+  #  gui.update_idletasks()
+  #  gui.update()
     
     
     
