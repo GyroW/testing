@@ -206,7 +206,7 @@ targetshit = 0
 
 #Visualvariables
 xpadding = 500
-ypadding = 250
+ypadding = 10
 fontsize = 70
 textcolour      ='#00468B'
 textfont        ='Helvetica'
@@ -263,7 +263,7 @@ def updatevisual():
         VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
     else:
         VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
-    Vballingame = Label(textvariable=Qballingame, fg = inactivecolour, font=(textfont, fontsize/2))
+    Vballingame = Label(text="bal:", textvariable=Qballingame, fg = inactivecolour, font=(textfont, fontsize/2))
     VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Makes sure VPP1-4 exists
     VPP2.grid(row=1,column=2, pady=(0,ypadding))
     VPP3.grid(row=3,column=0)
