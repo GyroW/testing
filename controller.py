@@ -211,7 +211,6 @@ textfont        ='Helvetica'
 activecolour    ='#FFDE00'
 inactivecolour  ='#149CD8'
 
-print("thiscode will run")
 gui = Tk()         #init van scherm
 w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
 gui.overrideredirect(1)                                     #Overschrijft de taakbalk en dergelijken
@@ -220,6 +219,10 @@ bgimage = PhotoImage(file = 'background.gif')               #Zet bgimage als cor
 achtergrondfoto = Label(image=bgimage)                      #Maakt een label aan met bovenaf vermelde foto
 achtergrondfoto.place(x=0, y=0, relwidth=1, relheight=1)    #Plaatst de achtergrond foto
 
+QPP1 = StringVar()
+QPP2 = StringVar()
+QPP3 = StringVar()
+QPP4 = StringVar()
 
 Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))
 Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
@@ -230,9 +233,38 @@ Speler1.grid(row=0,column=0, sticky=E)
 Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
 Speler3.grid(row=2,column=0, sticky=E, )
 Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
-print("this code has ran")
 
+def updatevisual():
+    global QPP1
+    global QPP2
+    global QPP3
+    global QPP4
+    QPP1.set(PP1)
+    QPP2.set(PP2)
+    QPP3.set(PP3)
+    QPP4.set(PP4)
 
+    if playeringame == 1:
+        VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP1 = Label(textvariable=QPP1, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 2:
+        VPP2 = Label(textvariable=QPP2, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 3:
+        VPP3 = Label(textvariable=QPP3, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,    font=(textfont, fontsize))
+    if playeringame == 4:
+        VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
+    else:
+        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
+
+    VPP1.grid(row=1,column=0, pady=(0,ypadding))
+    VPP2.grid(row=1,column=2, pady=(0,ypadding))
+    VPP3.grid(row=3,column=0)
+    VPP4.grid(row=3,column=2)
 
 
 
@@ -241,7 +273,7 @@ print("this code has ran")
 def main():             #Hoofdprogramma
     setup()
     setlites()
-   # updatevisual()
+    updatevisual()
     global bonus    
     runtime = 2  
     if runtime == 1:
