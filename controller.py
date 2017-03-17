@@ -205,8 +205,8 @@ targetshit = 0
 #Yardsdirection is deprecated as it is now handled with DictPijltjes
 
 #Visualvariables
-xpadding = 0 #500
-ypadding = 0 #250
+xpadding = 50 #500
+ypadding = 200 #250
 fontsize = 70
 textcolour      ='#00468B'
 textfont        ='Helvetica'
