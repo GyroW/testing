@@ -225,11 +225,13 @@ def visual():           #Visual Initialization
     Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
     Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
     Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
+    ballplaying = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize/2))
 
     Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
     Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
     Speler3.grid(row=2,column=0, sticky=E, )
     Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
+    ballplaying.grid(row=0, column=1, sticky=N)
 
 def updatevisual():
     print("updated the visual")
@@ -265,40 +267,14 @@ def updatevisual():
     VPP4.grid(row=3,column=2)
     gui.update_idletasks()
     gui.update()
-    
-#def resetvisual():
-#    if playeringame == 1:
-#        VPP1 = Label(text=PP1, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP1 = Label(text=PP1, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 2:
-#        VPP2 = Label(text=PP2, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP2 = Label(text=PP2, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 3:
-#        VPP3 = Label(text=PP3, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP3 = Label(text=PP3, fg=inactivecolour,    font=(textfont, fontsize))
-#    if playeringame == 4:
-#        VPP4 = Label(text=PP4, fg=activecolour,      font=(textfont, fontsize))
-#    else:
-#        VPP4 = Label(text=PP4, fg=inactivecolour,    font=(textfont, fontsize))
-#    VPP1.destroy()
-#    VPP2.destroy()
-#    VPP3.destroy()
-#    VPP4.destroy()
-    
-    
-    
 
     
 def main():             #Hoofdprogramma
     setup()
     setlites()
-#    startknop()
     updatevisual()
     global bonus    
-    runtime = 3
+    runtime = 2  
     if runtime == 1:
         for addr in [0x40, 0x42, 0x44]:
             for side in [O_GPIOA, O_GPIOB]:
