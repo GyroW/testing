@@ -211,6 +211,7 @@ inactivecolour  ='#149CD8'
 
 
 def visual():           #Visual Initialization
+    print("visual has been run")
     gui = Tk()
     bgimage = PhotoImage(file = 'background.gif')                               #Sets background image
     x = Label(image=bgimage) 
