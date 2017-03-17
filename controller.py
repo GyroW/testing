@@ -207,12 +207,12 @@ textcolour      ='#00468B'
 textfont        ='Helvetica'
 activecolour    ='#FFDE00'
 inactivecolour  ='#149CD8'
-
+gui = Tk()
 
 
 def visual():           #Visual Initialization
     print("visual has been run")
-    gui = Tk()
+    
     bgimage = PhotoImage(file = 'background.gif')                               #Sets background image
     x = Label(image=bgimage) 
     x.place(x=0, y=0, relwidth=1, relheight=1)
