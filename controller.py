@@ -177,17 +177,12 @@ IndexDecayards = ['yardsleft', 'yards10', 'yards20', 'yards30', 'yards40', 'yard
 IndexBonus = ['1000', '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000', '10000']
 
 #starting variables
-ballingame = 1
-maxballs = 5
-maxplayers = 0
-playeringame = 0
-Gameover = True
-gui = Tk()
-QPP1 = StringVar() 
-QPP2 = StringVar() 
-QPP3 = StringVar() 
-QPP4 = StringVar() 
-PP1 = 0
+ballingame = 1  #bal in spel
+maxballs = 5    #maximum aantal ballen
+maxplayers = 0  #maximum aantal spelers (startknop)
+playeringame = 0 #huidige speler
+Gameover = True #gameover mode
+PP1 = 0     #Punten van spelers
 PP2 = 0
 PP3 = 0
 PP4 = 0
@@ -219,7 +214,7 @@ bgimage = PhotoImage(file = 'background.gif')               #Zet bgimage als cor
 achtergrondfoto = Label(image=bgimage)                      #Maakt een label aan met bovenaf vermelde foto
 achtergrondfoto.place(x=0, y=0, relwidth=1, relheight=1)    #Plaatst de achtergrond foto
 
-QPP1 = StringVar()
+QPP1 = StringVar() #Special kind of variable that enables the punten label to be updated
 QPP2 = StringVar()
 QPP3 = StringVar()
 QPP4 = StringVar()
@@ -235,11 +230,11 @@ Speler3.grid(row=2,column=0, sticky=E, )
 Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
 
 def updatevisual():
-    global QPP1
+    global QPP1     #makes said variable editable
     global QPP2
     global QPP3
     global QPP4
-    QPP1.set(PP1)
+    QPP1.set(PP1)   #Updates variable
     QPP2.set(PP2)
     QPP3.set(PP3)
     QPP4.set(PP4)
