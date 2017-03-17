@@ -70,8 +70,8 @@ def task():
     gui.update_idletasks()
     gui.update()
 
-#while 1:
-#    task()
+while 1:
+    task()
 
 
 
