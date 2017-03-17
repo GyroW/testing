@@ -416,7 +416,7 @@ def game(A, B):         #Handles switches
 	    
             
             setlites()
-            #updatevisual()
+            updatevisual()
 	    lasttargetdown() #check if 7 targets have been hit
 
 ######################################
