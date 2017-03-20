@@ -198,13 +198,14 @@ targetshit = 0
 #Yardsdirection is deprecated as it is now handled with DictPijltjes
 
 #Visualvariables
-xpadding = 50
+xpadding = 350
 ypadding = 250
 fontsize = 70
 textcolour      ='#00468B'
 textfont        ='Helvetica'
 activecolour    ='#FFDE00'
-inactivecolour  ='#149CD8'
+inactivecolour  ='#0088CE'
+bgcolour 	='#FFFFFF'
 
 gui = Tk()                                                  #init van scherm
 w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
@@ -219,10 +220,10 @@ QPP2 = StringVar()
 QPP3 = StringVar()
 QPP4 = StringVar()
 
-Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))
-Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
-Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
-Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
+Speler1 = Label(text='Speler 1', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Speler2 = Label(text='Speler 2', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Speler3 = Label(text='Speler 3', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Speler4 = Label(text='Speler 4', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
 
 Speler1.grid(row=0,column=0, sticky=E)
 Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
@@ -240,21 +241,21 @@ def updatevisual():
     QPP4.set(PP4)
     print("visual updating")
     if playeringame == 1:
-        VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
+        VPP1 = Label(textvariable=QPP1, fg=activecolour, 	bg=bgcolour, 	font=(textfont, fontsize))
     else:
-        VPP1 = Label(textvariable=QPP1, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP1 = Label(textvariable=QPP1, fg=inactivecolour, 	bg=bgcolour,   	font=(textfont, fontsize))
     if playeringame == 2:
-        VPP2 = Label(textvariable=QPP2, fg=activecolour,      font=(textfont, fontsize))
+        VPP2 = Label(textvariable=QPP2, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
-        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
     if playeringame == 3:
-        VPP3 = Label(textvariable=QPP3, fg=activecolour,      font=(textfont, fontsize))
+        VPP3 = Label(textvariable=QPP3, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
-        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
     if playeringame == 4:
-        VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
+        VPP4 = Label(textvariable=QPP4, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
-        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
 
     VPP1.grid(row=1,column=0, pady=(0,ypadding))
     VPP2.grid(row=1,column=2, pady=(0,ypadding))
