@@ -13,6 +13,8 @@ inactivecolour  ='#149CD8'
 gui = Tk()
 i = StringVar() 
 w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()
+
+
 gui.overrideredirect(1)
 gui.geometry("%dx%d+0+0" % (w, h))
 bgimage = PhotoImage(file = 'background.gif')
@@ -74,5 +76,6 @@ def task():
 #    gui.update()
 
 while 1:
-    task()
+    func()
+    #task()
 

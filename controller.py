@@ -219,26 +219,31 @@ QPP1 = StringVar() #Special kind of variable that enables the punten label to be
 QPP2 = StringVar()
 QPP3 = StringVar()
 QPP4 = StringVar()
+Qballingame = StringVar()
 
 Speler1 = Label(text='Speler 1', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
 Speler2 = Label(text='Speler 2', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
 Speler3 = Label(text='Speler 3', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
 Speler4 = Label(text='Speler 4', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Ballingame = Label(text='Bal in spel', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
 
 Speler1.grid(row=0,column=0, sticky=E)
 Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
 Speler3.grid(row=2,column=0, sticky=E, )
 Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
+Ballingame.grid(row=2,column=1, padx=xpadding)
 
 def updatevisual():
     global QPP1     #makes said variable editable
     global QPP2
     global QPP3
     global QPP4
+    global Qballingame
     QPP1.set(PP1)   #Updates variable
     QPP2.set(PP2)
     QPP3.set(PP3)
     QPP4.set(PP4)
+    Qballingame.set(ballingame)
     print("visual updating")
     if playeringame == 1:
         VPP1 = Label(textvariable=QPP1, fg=activecolour, 	bg=bgcolour, 	font=(textfont, fontsize))
@@ -256,16 +261,16 @@ def updatevisual():
         VPP4 = Label(textvariable=QPP4, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
         VPP4 = Label(textvariable=QPP4, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
+    Vballingame = Label(textvariable=Qballingame, fg=inactivecolour, bg=bgcolour, font=(textfont, fontsize))
+    
+    VPP1.grid(row=1,column=0)
+    VPP2.grid(row=1,column=2)
+    VPP3.grid(row=3,column=0, pady=(ypadding,0))
+    VPP4.grid(row=3,column=2, pady=(ypadding,0))
+    Vballingame = Label(row=2,column=1)
 
-    VPP1.grid(row=1,column=0, pady=(0,ypadding))
-    VPP2.grid(row=1,column=2, pady=(0,ypadding))
-    VPP3.grid(row=3,column=0)
-    VPP4.grid(row=3,column=2)
-   # raw_input("Waiting for the weird visual thing:")
     gui.update_idletasks()
     gui.update()
-
-
 
 
 def main():             #Hoofdprogramma
