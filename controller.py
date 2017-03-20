@@ -229,7 +229,7 @@ Ballingame = Label(text='Bal in spel', fg=textcolour, bg=bgcolour, font=(textfon
 
 Speler1.grid(row=0,column=0, sticky=E)
 Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
-Speler3.grid(row=2,column=0, sticky=E, )
+Speler3.grid(row=2,column=0, sticky=E, pady=(ypadding,0))
 Speler4.grid(row=2,column=2, sticky=W, padx=xpadding, pady=(ypadding,0))
 Ballingame.grid(row=0,column=1, sticky=N, padx=(xpadding,0))
 
