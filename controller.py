@@ -267,7 +267,7 @@ def updatevisual():
     VPP2.grid(row=1,column=2)
     VPP3.grid(row=3,column=0, pady=(ypadding,0))
     VPP4.grid(row=3,column=2, pady=(ypadding,0))
-    Vballingame = Label(row=2,column=1)
+    Vballingame.grid(row=2,column=1)
 
     gui.update_idletasks()
     gui.update()
