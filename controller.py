@@ -199,7 +199,7 @@ targetshit = 0
 
 #Visualvariables
 xpadding = 0
-ypadding = 250
+ypadding = 275
 fontsize = 70
 textcolour      ='#00468B'
 textfont        ='Helvetica'
