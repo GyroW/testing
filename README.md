@@ -9,4 +9,3 @@ This is the main program wich will control the board and send data to the screen
 # Test.py
 
 This is the original code that came from pridopia.co.uk
-

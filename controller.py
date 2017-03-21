@@ -147,7 +147,6 @@ def setup(): #Sets up GPIO, lights, variables, inputs, pull-up resistors
     GPIO.output(CS, GPIO.HIGH)
     GPIO.output(SCLK, GPIO.LOW)
     reset_regs()
-    visual()
     #Set as Input
     sendSPI(0x46, O_IODIRA, 0xFF)
     sendSPI(0x46, O_IODIRB, 0xFF)
@@ -178,18 +177,13 @@ IndexDecayards = ['yardsleft', 'yards10', 'yards20', 'yards30', 'yards40', 'yard
 IndexBonus = ['1000', '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000', '10000']
 
 #starting variables
-ballingame = 1
-maxballs = 5
-maxplayers = 0
-playeringame = 0
-Gameover = True
-gui = Tk()
-QPP1 = StringVar() 
-QPP2 = StringVar() 
-QPP3 = StringVar() 
-QPP4 = StringVar() 
-Qballingame = StringVar()
-PP1 = 0
+
+ballingame = 1  #bal in spel
+maxballs = 5    #maximum aantal ballen
+maxplayers = 0  #maximum aantal spelers (startknop)
+playeringame = 0 #huidige speler
+Gameover = True #gameover mode
+PP1 = 0     #Punten van spelers
 PP2 = 0
 PP3 = 0
 PP4 = 0
@@ -205,87 +199,88 @@ targetshit = 0
 #Yardsdirection is deprecated as it is now handled with DictPijltjes
 
 #Visualvariables
-xpadding = 50 #500
-ypadding = 200 #250
+xpadding = 0
+ypadding = 275
 fontsize = 70
 textcolour      ='#00468B'
 textfont        ='Helvetica'
 activecolour    ='#FFDE00'
-inactivecolour  ='#149CD8'
-gui = Tk()
-#gui.attributes("-fullscreen",True)
-#w = gui.winfo_screenwidth() 
-#h = gui.winfo_screenheight()
-#print(w,h)
-#
-#gui.overrideredirect(1)
-#gui.geometry("%dx%d+0+0" % (w, h))
 
-def visual():           #Visual Initialization
-    print("visual has been run")
-    
-    bgimage = PhotoImage(file = 'background.gif')                               #Sets background image
-    x = Label(image=bgimage) 
-    x.place(x=0, y=0, relwidth=1, relheight=1)
+inactivecolour  ='#0088CE'
+bgcolour 	='#FFFFFF'
 
-    Speler1 = Label(text='Speler 1', fg=textcolour, font=(textfont, fontsize))  #Creert label met correcte tekst, kleur, font en grootte
-    Speler2 = Label(text='Speler 2', fg=textcolour, font=(textfont, fontsize))
-    Speler3 = Label(text='Speler 3', fg=textcolour, font=(textfont, fontsize))
-    Speler4 = Label(text='Speler 4', fg=textcolour, font=(textfont, fontsize))
-    Ballingame = Label(text='Ball in game', fg = textcolour, font=(textfont, fontsize/2))
+gui = Tk()                                                  #init van scherm
+w, h = gui.winfo_screenwidth(), gui.winfo_screenheight()    #Pakt de hoogte en breedte van het scherm
+gui.overrideredirect(1)                                     #Overschrijft de taakbalk en dergelijken
+gui.geometry("%dx%d+0+0" % (w, h))                          #Zet de schermgroote op de maat van het scherm
+bgimage = PhotoImage(file = 'background.gif')               #Zet bgimage als correcte soort variable
+achtergrondfoto = Label(image=bgimage)                      #Maakt een label aan met bovenaf vermelde foto
+achtergrondfoto.place(x=0, y=0, relwidth=1, relheight=1)    #Plaatst de achtergrond foto
 
-    Speler1.grid(row=0,column=0, sticky=E)                                      #Plaatst de labels op de correcte plaats met desnodig padding
-    Speler2.grid(row=0,column=2, sticky=W)
-    Speler3.grid(row=2,column=0, sticky=E)
-    Speler4.grid(row=2,column=2, sticky=W, padx=xpadding)
-    Ballingame.grid(row=0, column=1, padx=xpadding)
+QPP1 = StringVar() #Special kind of variable that enables the punten label to be updated
+QPP2 = StringVar()
+QPP3 = StringVar()
+QPP4 = StringVar()
+Qballingame = StringVar()
+
+Speler1 = Label(text='Speler 1', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Speler2 = Label(text='Speler 2', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Speler3 = Label(text='Speler 3', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Speler4 = Label(text='Speler 4', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+Ballingame = Label(text='Bal in spel', fg=textcolour, bg=bgcolour, font=(textfont, fontsize))
+
+Speler1.grid(row=0,column=0, sticky=E)
+Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
+Speler3.grid(row=2,column=0, sticky=E, pady=(ypadding,0))
+Speler4.grid(row=2,column=2, sticky=W, padx=xpadding, pady=(ypadding,0))
+Ballingame.grid(row=0,column=1, sticky=N, padx=(xpadding,0))
+
 
 def updatevisual():
-    print("updated the visual")
-    global QPP1 
-    global QPP2 
+    global QPP1     #makes said variable editable
+    global QPP2
     global QPP3
     global QPP4
     global Qballingame
-    QPP1.set(PP1) 
+    QPP1.set(PP1)   #Updates variable
     QPP2.set(PP2)
     QPP3.set(PP3)
     QPP4.set(PP4)
     Qballingame.set(ballingame)
-    #Maakt de VPP1-4 labels
+    #print("visual updating")
     if playeringame == 1:
-        VPP1 = Label(textvariable=QPP1, fg=activecolour,      font=(textfont, fontsize))
+        VPP1 = Label(textvariable=QPP1, fg=activecolour, 	bg=bgcolour, 	font=(textfont, fontsize))
     else:
-        VPP1 = Label(textvariable=QPP1, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP1 = Label(textvariable=QPP1, fg=inactivecolour, 	bg=bgcolour,   	font=(textfont, fontsize))
     if playeringame == 2:
-        VPP2 = Label(textvariable=QPP2, fg=activecolour,      font=(textfont, fontsize))
+        VPP2 = Label(textvariable=QPP2, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
-        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP2 = Label(textvariable=QPP2, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
     if playeringame == 3:
-        VPP3 = Label(textvariable=QPP3, fg=activecolour,      font=(textfont, fontsize))
+        VPP3 = Label(textvariable=QPP3, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
-        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,    font=(textfont, fontsize))
+        VPP3 = Label(textvariable=QPP3, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
     if playeringame == 4:
-        VPP4 = Label(textvariable=QPP4, fg=activecolour,      font=(textfont, fontsize))
+        VPP4 = Label(textvariable=QPP4, fg=activecolour,  	bg=bgcolour,    font=(textfont, fontsize))
     else:
-        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,    font=(textfont, fontsize))
-    Vballingame = Label(text="bal:", textvariable=Qballingame, fg = inactivecolour, font=(textfont, fontsize/2))
-    VPP1.grid(row=1,column=0, pady=(0,ypadding))                                #Makes sure VPP1-4 exists
-    VPP2.grid(row=1,column=2, pady=(0,ypadding))
-    VPP3.grid(row=3,column=0)
-    VPP4.grid(row=3,column=2)
-    Vballingame.grid(row=1, column=1)
+        VPP4 = Label(textvariable=QPP4, fg=inactivecolour,  	bg=bgcolour,  	font=(textfont, fontsize))
+    Vballingame = Label(textvariable=Qballingame, fg=inactivecolour, bg=bgcolour, font=(textfont, fontsize))
+    
+    VPP1.grid(row=1,column=0)
+    VPP2.grid(row=1,column=2)
+    VPP3.grid(row=3,column=0, pady=(0,ypadding))
+    VPP4.grid(row=3,column=2, pady=(0,ypadding))
+    Vballingame.grid(row=1,column=1)
+
     gui.update_idletasks()
     gui.update()
-    
-    
+
 def main():             #Hoofdprogramma
     setup()
     setlites()
-#    startknop()
     updatevisual()
     global bonus    
-    runtime = 2
+    runtime = 2  
     if runtime == 1:
         for addr in [0x40, 0x42, 0x44]:
             for side in [O_GPIOA, O_GPIOB]:
@@ -294,6 +289,7 @@ def main():             #Hoofdprogramma
     if runtime == 2:
         while 1:
             Scan.feel()
+    #        updatevisual()
     if runtime == 3:
 	while 1:
 	    time.sleep(2)
@@ -312,9 +308,9 @@ def game(A, B):         #Handles switches
 	global DictGoalscores
 	switchbankone = mklst(B)
         switchbanktwo = mklst(A)
-	print(switchbankone)
-	print(switchbanktwo)
-        print(Dict30yardswlit)            
+	#print(switchbankone)
+	#print(switchbanktwo)
+        #print(Dict30yardswlit)            
     
         if switchbanktwo[4] == 1:
             startknop()
@@ -323,7 +319,7 @@ def game(A, B):         #Handles switches
 
             
             if switchbanktwo[7] == 1:#toprollover 1
-                print("top rollover 1")
+                #print("top rollover 1")
 	        punten(500)
                 if Dict30yardswlit['1'] == 0: 
                    addyards(30)
@@ -334,7 +330,7 @@ def game(A, B):         #Handles switches
 
 
             if switchbankone[1] == 1:#toprollover 2
-                print("top rollover 2")
+                #print("top rollover 2")
                 punten(500)
                 if Dict30yardswlit['2'] == 0:
                     addyards(30)
@@ -345,7 +341,7 @@ def game(A, B):         #Handles switches
 
             
             if switchbankone[2] == 1:#toprollover 3
-                print("top rollover 3")
+               # print("top rollover 3")
                 punten(500)
                 if Dict30yardswlit['3'] == 0:
                     addyards(30)
@@ -357,7 +353,7 @@ def game(A, B):         #Handles switches
 
             
             if switchbankone[3] == 1:#toprollover 4
-                print("top rollover 4")
+                #print("top rollover 4")
                 punten(500)
                 if Dict30yardswlit['4'] == 0: 
                     addyards(30)
@@ -368,26 +364,26 @@ def game(A, B):         #Handles switches
 
             
             if switchbankone[4] == 1:#ster
-                print("ster")
+                #print("ster")
 		punten(100)
                 changeyardsdirection()
 		if bonus == 10000:
 		    if DictGoalscores['5000'] == 0 and DictGoalscores['extra ball'] == 1 and DictGoalscores['special'] == 1:
 			DictGoalscores['5000'] = 1
 			DictGoalscores['extra ball'] = 0
-		print(DictGoalscores)		
+		#print(DictGoalscores)		
 		addbonus(1000)
 
             
             if switchbankone[5] == 1:#popbumper
-                print("popbumper")
+                #print("popbumper")
 		punten(50)
                 addyards(1)
                 randomtoplights()
 
             
             if switchbankone[6] == 1:#targets
-                print("targets")
+                #print("targets")
 		punten(1000)
                 addbonus(1000)
                 addyards(5)
@@ -397,26 +393,26 @@ def game(A, B):         #Handles switches
 
             
             if switchbanktwo[5] == 1:#spinner
-                print("spinner")
+                #print("spinner")
 		punten(10) 
                 addyards(1)
 
             
             if switchbanktwo[0] == 1:#outlane
-                print("outlane")
+                #print("outlane")
                 punten(1000)
                 addyards(10)
 
             
             if switchbanktwo[1] == 1:#achterbank
-                print("targets archetr bank")
+                #print("targets archetr bank")
 		addbonus(1000)
                 punten(500)
                 addyards(1)
 
             
             if switchbanktwo[2] == 1:#bank drop down targers 
-                print("droptarget")
+                #print("droptarget")
 		targetshit += 1
                 punten(300)
 
@@ -437,45 +433,45 @@ def special():          #Zal een special geven
     extraball()
     punten(10000)
     addbonus(3000)
-    print("special")
+    #print("special")
 
 def extraball():        #Zal voorkomen dat de spelercount omhoog gaat en dat het "shoot again" lampje aangaat
     global Shootagain
-    print("extra ball")
+    #print("extra ball")
     Shootagain = 0
 
 def goal():             #Kijkt welke lampje boven de goal aan is
-    print("goal")
+    #print("goal")
     if DictGoalscores['5000'] == 0:
-            print("5000 scored")        
+     #       print("5000 scored")        
             punten(5000)
     elif DictGoalscores['extra ball'] == 0:
-            print("goal scored")
+      #      print("goal scored")
             extraball()
     elif DictGoalscores['special'] == 0:   
-            print("special scored")
+       #     print("special scored")
             special()
 
 def doublebonus():      #Zorgt ervoor dat de bonus zal verdubbelt worden
-    print("doublebonus")
+   # print("doublebonus")
     global DoubleBonus
     DoubleBonus = 0 
 
 def addbonus(amount):   #Voegt bonuspunten toe
     global bonus
     global DictBonus
-    print("bonus")
+    #print("bonus")
     for i in DictBonus:               #Resets dictionary to default state (all 1s)
         DictBonus[i] = 1            #It's set to 1 because lights will turn on when given ground, and off when given 3.3V
     if bonus < 10000:
         bonus += amount 
     DictBonus[IndexBonus[(bonus/1000)-1]] = 0
-    print(bonus)
+    #print(bonus)
 
 def lasttargetdown():   #Kijkt welke lampje langs de droptarget aan is
     global targetshit
     if targetshit == 7:
-        print("lasttarget down")
+     #   print("lasttarget down")
         if DictLTDscores['goal'] == 0:
             goal()
         elif DictLTDscores['special']:
@@ -510,15 +506,15 @@ def addyards(amount):    #Voegt yards toe en zorgt ervoor dat de lampjes gestuur
         DictDecayards[i] = 1
     DictSingleyards[IndexSingleyards[yardsvalue - 1]] = 0   #Sets appropriate value (depending on yardvalue) to 0 -> this lite will be on
     DictDecayards[IndexDecayards[decayardsvalue]] = 0       #Sets appropriate value (depending on decayardvalue) to 0 -> this lite will be on
-    print(yardsvalue)
-    print(decayardsvalue)
+   # print(yardsvalue)
+   # print(decayardsvalue)
 
 def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
     global DictPijltjes
     global DictGoalscores
     global DictLTDscores
     global Shootagain
-    print("outhole")
+   # print("outhole")
     countbonus()
     time.sleep(2)
     ejectball()
@@ -565,11 +561,11 @@ def gameover():
     PP2 = 0
     PP3 = 0
     PP4 = 0
-    updatevisual()
+    #updatevisual()
 
 
 def startknop():
-    print("startknop")
+    #print("startknop")
     global maxplayers
     global Gameover
     global playeringame
@@ -580,7 +576,7 @@ def startknop():
         maxplayers += 1
 
 def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt wordt gespeeld
-    print("ejectball")
+    #print("ejectball")
     global Kicker
     Kicker = 0
     setlites()
@@ -589,7 +585,7 @@ def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt 
     setlites()
 
 def countbonus():           #Telt de bonus punten op nadat de bal kwijt wordt gespeeld, zorgt ook voor doublebonus
-    print("countbonus")
+    #print("countbonus")
     global bonus
     if DoubleBonus == 0:
         bonus *= 2
@@ -597,7 +593,7 @@ def countbonus():           #Telt de bonus punten op nadat de bal kwijt wordt ge
     bonus = 0
 
 def changeyardsdirection(): #Verandert richting van pijltjes
-    print("changeyardsdirection")
+    #print("changeyardsdirection")
     global DictPijltjes
 
     DictPijltjes['left'] = togglevar(DictPijltjes['left'])
@@ -616,16 +612,16 @@ def punten(amount):         #Voorziet punten (WIP)
         PP3 += amount
     if playeringame == 4:
         PP4 += amount
-    print("Ball in game:", ballingame)
-    print("Player in game:", playeringame)
-    print("Punten Speler 1:", PP1)
-    print("Punten Speler 2:", PP2)
-    print("Punten Speler 3:", PP3)
-    print("Punten Speler 4:", PP4)
+    #print("Ball in game:", ballingame)
+    #print("Player in game:", playeringame)
+    #print("Punten Speler 1:", PP1)
+    #print("Punten Speler 2:", PP2)
+    #print("Punten Speler 3:", PP3)
+    #print("Punten Speler 4:", PP4)
 
 def randomtoplights():      #Maakt de lampjes willekeurig
     global Dict30yardswlit 
-    print("randomtoplights")
+    #print("randomtoplights")
     Dict30yardswlit['1'] = random.randint(0, 1)
     Dict30yardswlit['2'] = random.randint(0, 1)
     Dict30yardswlit['3'] = random.randint(0, 1)
@@ -643,7 +639,7 @@ def walkinglight(opcode, addr, speed):     #Om alle lampjes te testen
         listwalk = [1, 1, 1, 1, 1, 1, 1, 1] 
         listwalk[i] = 0 
         sendSPI(opcode, addr, mkhex(listwalk))
-        print(opcode, addr, i)
+    #    print(opcode, addr, i)
         time.sleep(speed)
 
 def mklst(x):           #Maakt van een hexadecimaal getal een binaire lijst
