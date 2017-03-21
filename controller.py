@@ -177,6 +177,7 @@ IndexDecayards = ['yardsleft', 'yards10', 'yards20', 'yards30', 'yards40', 'yard
 IndexBonus = ['1000', '2000', '3000', '4000', '5000', '6000', '7000', '8000', '9000', '10000']
 
 #starting variables
+
 ballingame = 1  #bal in spel
 maxballs = 5    #maximum aantal ballen
 maxplayers = 0  #maximum aantal spelers (startknop)
@@ -204,6 +205,7 @@ fontsize = 70
 textcolour      ='#00468B'
 textfont        ='Helvetica'
 activecolour    ='#FFDE00'
+
 inactivecolour  ='#0088CE'
 bgcolour 	='#FFFFFF'
 
@@ -232,6 +234,7 @@ Speler2.grid(row=0,column=2, sticky=W, padx=xpadding)
 Speler3.grid(row=2,column=0, sticky=E, pady=(ypadding,0))
 Speler4.grid(row=2,column=2, sticky=W, padx=xpadding, pady=(ypadding,0))
 Ballingame.grid(row=0,column=1, sticky=N, padx=(xpadding,0))
+
 
 def updatevisual():
     global QPP1     #makes said variable editable
@@ -271,7 +274,6 @@ def updatevisual():
 
     gui.update_idletasks()
     gui.update()
-
 
 def main():             #Hoofdprogramma
     setup()
@@ -689,5 +691,4 @@ def setlites(): #Compiles 6 lists, one for each address on each chip (2*3) and s
 if __name__ == '__main__':
         Scan=Feeler(10,game)    #Detects a change in inputs, if it's set to a certain state for longer than "30" counts it executes "game"
         main()                  #Main loop
-        reset_regs()            #Resets all register after main has ended (probably won't ever be used in a real life situation
  
