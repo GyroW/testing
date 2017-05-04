@@ -247,6 +247,8 @@ def updatevisual():
     QPP3.set(PP3)
     QPP4.set(PP4)
     Qballingame.set(ballingame)
+    if Gameover == True
+        Qballingame.set("G")
     #print("visual updating")
     if playeringame == 1:
         VPP1 = Label(textvariable=QPP1, fg=activecolour, 	bg=bgcolour, 	font=(textfont, fontsize))
