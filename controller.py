@@ -314,6 +314,9 @@ def game(A, B):         #Handles switches
     
         if switchbanktwo[4] == 1:
             startknop()
+	
+	if switchbanktwo[3] == 1:#outhole
+                outhole() 
             
         if Gameover == False:       #Only work if not in gameover mode
 
@@ -417,8 +420,7 @@ def game(A, B):         #Handles switches
                 punten(300)
 
             
-            if switchbanktwo[3] == 1:#outhole
-                outhole() 
+            
 	    
             
             setlites()
@@ -533,6 +535,8 @@ def outhole():              #Zorgt voor de spelercount, ejectball en countbonus
     #Spelercount
     global ballingame
     global playeringame
+    if Gameover == True:
+        ejectball()
     if Gameover == False:    
         if Shootagain == 1:     #If false
             playeringame += 1   #Add to playeringame
