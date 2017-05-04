@@ -247,7 +247,7 @@ def updatevisual():
     QPP3.set(PP3)
     QPP4.set(PP4)
     Qballingame.set(ballingame)
-    if Gameover == True
+    if Gameover == True:
         Qballingame.set("G")
     #print("visual updating")
     if playeringame == 1:
