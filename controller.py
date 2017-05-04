@@ -460,6 +460,7 @@ def doublebonus():      #Zorgt ervoor dat de bonus zal verdubbelt worden
 def addbonus(amount):   #Voegt bonuspunten toe
     global bonus
     global DictBonus
+    
     #print("bonus")
     for i in DictBonus:               #Resets dictionary to default state (all 1s)
         DictBonus[i] = 1            #It's set to 1 because lights will turn on when given ground, and off when given 3.3V
@@ -467,6 +468,7 @@ def addbonus(amount):   #Voegt bonuspunten toe
         bonus += amount 
     DictBonus[IndexBonus[(bonus/1000)-1]] = 0
     #print(bonus)
+    
 
 def lasttargetdown():   #Kijkt welke lampje langs de droptarget aan is
     global targetshit
@@ -552,6 +554,8 @@ def gameover():
     global PP2
     global PP3
     global PP4
+    global playeringame 
+    playeringame = 0
     Gameover = True
     ballingame = 1
     maxplayers = 0
@@ -586,11 +590,13 @@ def ejectball():            #Trekt de relais kortstondig aan nadat de bal kwijt 
 
 def countbonus():           #Telt de bonus punten op nadat de bal kwijt wordt gespeeld, zorgt ook voor doublebonus
     #print("countbonus")
+    global DoubleBonus
     global bonus
     if DoubleBonus == 0:
         bonus *= 2
     punten(bonus) 
     bonus = 0
+    DoubleBonus = 1
 
 def changeyardsdirection(): #Verandert richting van pijltjes
     #print("changeyardsdirection")
