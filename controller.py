@@ -569,7 +569,8 @@ def gameover():
     PP2 = 0
     PP3 = 0
     PP4 = 0
-    #updatevisual()
+    print(playeringame)
+    updatevisual()
 
 
 def startknop():
